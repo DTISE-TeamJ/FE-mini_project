@@ -1,10 +1,10 @@
 import Image from "next/image";
+import Hero from "@/app/_components/Hero/Hero";
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <div>
-      <h1>Test</h1>
-      <h2>Test 2</h2>
+      <Hero />
     </div>
   );
 };
