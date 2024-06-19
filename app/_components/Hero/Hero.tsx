@@ -27,7 +27,10 @@ const Hero: React.FC = () => {
             />
           </div>
           <div>
-            <AiOutlineSearch size={20} className="icon text-[#fff]" />
+            <AiOutlineSearch
+              size={20}
+              className="icon text-[#b9baba] cursor-pointer"
+            />
           </div>
         </form>
       </div>
