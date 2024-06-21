@@ -9,7 +9,6 @@ import {
   IoList,
   IoCodeWorking,
 } from "react-icons/io5";
-import "./MenuList.css";
 import { MenuListContainer, MenuListItem } from "./style";
 
 const MenuList: React.FC = () => {
@@ -20,51 +19,16 @@ const MenuList: React.FC = () => {
   }, []);
 
   return (
-    /*
-    <ul className="menu--list">
-      <li className="menu--list-item active">
-        <Link href="/admin">
-          <IoDiamond />
-          Dashboard
-        </Link>
-      </li>
-      <li className="menu--list-item">
-        <Link href="/admin">
-          <IoSettingsOutline />
-          MenuList
-        </Link>
-      </li>
-      <li className="menu--list-item">
-        <Link href="/admin">
-          <IoHelp />
-          MenuList
-        </Link>
-      </li>
-      <li className="menu--list-item">
-        <Link href="/admin">
-          <IoList />
-          MenuList
-        </Link>
-      </li>
-      <li className="menu--list-item">
-        <Link href="/admin">
-          <IoCodeWorking />
-          MenuList
-        </Link>
-      </li>
-    </ul>
-    */
-
     <MenuListContainer>
       <MenuListItem className={activePath === "/admin" ? "active" : ""}>
-        <Link href="/admin">
+        <Link href="/dashboard">
           <IoDiamond />
           Dashboard
         </Link>
       </MenuListItem>
       <MenuListItem
-        className={activePath === "/admin/create-event" ? "active" : ""}>
-        <Link href="/admin/create-event">
+        className={activePath === "/dashboard/create-event" ? "active" : ""}>
+        <Link href="/dashboard/create-event">
           <IoCodeWorking />
           Create Event
         </Link>

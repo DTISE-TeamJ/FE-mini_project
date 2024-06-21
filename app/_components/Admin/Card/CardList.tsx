@@ -4,14 +4,6 @@ import { CardListStyle } from "./style";
 
 const CardList: React.FC = () => {
   return (
-    /*
-    <div className="card--list">
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-    </div>
-    */
     <CardListStyle>
       <Card />
       <Card />
