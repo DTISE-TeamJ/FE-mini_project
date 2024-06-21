@@ -1,11 +1,15 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { FormValues } from "./types";
+import { SignUpFormValues } from "@/types/authTypes";
 import Image from "next/image";
-import InfoIcon from "@/assets/tooltip/questionMark.svg";
+import InfoIcon from "@/assets/icons/questionMark.svg";
+import EyeOpen from "@/assets/icons/eyeOpen.svg";
+import EyeClose from "@/assets/icons/eyeClose.svg";
 
-const initialValues: FormValues = {
+const initialValues: SignUpFormValues = {
   username: "",
   email: "",
   password: "",
@@ -25,16 +29,28 @@ const validationSchema = Yup.object().shape({
 
 const SignupFormContent: React.FC<{
   handleSubmit: (
-    values: FormValues,
+    values: SignUpFormValues,
     actions: { resetForm: () => void }
   ) => void;
   isSubmitting: boolean;
-  hasRegisteredMessage: boolean;
-}> = ({ handleSubmit, isSubmitting, hasRegisteredMessage }) => {
+  hasSignedUpMessage: boolean;
+}> = ({ handleSubmit, isSubmitting, hasSignedUpMessage }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const togglePasswordConfirmationVisibility = () => {
+    setShowPasswordConfirmation(!showPasswordConfirmation);
+  };
+
   const labelStyle = "mb-2 text-gray-800 text-lg";
   const formStyle =
-    "bg-white p-4 border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 rounded-lg w-full";
-  const errorStyle = "text-[0.8rem] text-yellow-400";
+    "bg-white p-4 border-gray-700 shadow-md placeholder:text-sm sm:placeholder:text-base focus:scale-105 ease-in-out duration-300 rounded-lg w-full";
+  const errorStyle = "text-[0.8rem] text-red-600";
 
   return (
     <Formik
@@ -75,13 +91,26 @@ const SignupFormContent: React.FC<{
           <label htmlFor="password" className={labelStyle}>
             Password
           </label>
-          <Field
-            className={formStyle}
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-          />
+          <div className="relative">
+            <Field
+              className={formStyle}
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+            />
+            <div
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              <Image
+                src={showPassword ? EyeClose : EyeOpen}
+                alt="Toggle Password Visibility"
+                width={20}
+                height={20}
+              />
+            </div>
+          </div>
           <ErrorMessage
             className={errorStyle}
             name="password"
@@ -91,13 +120,26 @@ const SignupFormContent: React.FC<{
           <label htmlFor="passwordConfirmation" className={labelStyle}>
             Password Confirmation
           </label>
-          <Field
-            className={formStyle}
-            type="password"
-            id="passwordConfirmation"
-            name="passwordConfirmation"
-            placeholder="Re-type your password"
-          />
+          <div className="relative">
+            <Field
+              className={formStyle}
+              type={showPasswordConfirmation ? "text" : "password"}
+              id="passwordConfirmation"
+              name="passwordConfirmation"
+              placeholder="Re-type your password"
+            />
+            <div
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={togglePasswordConfirmationVisibility}
+            >
+              <Image
+                src={showPasswordConfirmation ? EyeClose : EyeOpen}
+                alt="Toggle Password Confirmation Visibility"
+                width={20}
+                height={20}
+              />
+            </div>
+          </div>
           <ErrorMessage
             className={errorStyle}
             name="passwordConfirmation"
@@ -149,7 +191,7 @@ const SignupFormContent: React.FC<{
               Register
             </button>
           </div>
-          {hasRegisteredMessage && (
+          {hasSignedUpMessage && (
             <div className="success-message text-green-500">
               Your registration has been completed
             </div>

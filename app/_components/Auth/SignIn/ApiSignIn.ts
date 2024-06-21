@@ -1,17 +1,22 @@
-import { FormValues, ApiResponse } from "./types";
+import {
+  SignInFormValues,
+  SignInResponse,
+} from "@/app/_components/Auth/SignInForm/types";
 
 const SUPABASE_URL = "http://localhost:8080";
 
-export const registerUser = async (data: FormValues): Promise<ApiResponse> => {
+export const signInUser = async (
+  data: SignInFormValues
+): Promise<SignInResponse> => {
   try {
-    const { username, email, password, referralCode } = data;
+    const { username, password } = data;
 
-    const response = await fetch(`${SUPABASE_URL}/auth/register`, {
+    const response = await fetch(`${SUPABASE_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, email, password, referralCode }),
+      body: JSON.stringify({ username, password }),
     });
 
     if (!response.ok) {
@@ -21,7 +26,7 @@ export const registerUser = async (data: FormValues): Promise<ApiResponse> => {
 
     return {
       success: true,
-      message: "Your registration has been completed.",
+      message: "You have successfully logged in.",
     };
   } catch (error) {
     console.error("Error during form submission", error);
