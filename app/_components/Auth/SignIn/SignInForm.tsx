@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { SignInFormValues } from "@/types/authTypes";
+import { SignInFormValues } from "@/types/auth";
 import SignInFormContent from "./SignInFormContent";
 import { signInUser } from "./ApiSignIn";
 import FormLayout from "../FormLayout";

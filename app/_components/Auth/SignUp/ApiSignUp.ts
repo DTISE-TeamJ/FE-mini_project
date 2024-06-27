@@ -1,4 +1,4 @@
-import { SignUpFormValues, SignUpResponse } from "@/types/authTypes";
+import { SignUpFormValues, SignUpResponse } from "@/types/auth";
 
 const SUPABASE_URL = "http://localhost:8080";
 

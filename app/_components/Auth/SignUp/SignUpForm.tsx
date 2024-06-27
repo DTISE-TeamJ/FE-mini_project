@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { SignUpFormValues } from "@/types/authTypes";
+import { SignUpFormValues } from "@/types/auth";
 import SignupFormContent from "./SignUpFormContent";
 import { signUpUser } from "./ApiSignUp";
 import FormLayout from "../FormLayout";

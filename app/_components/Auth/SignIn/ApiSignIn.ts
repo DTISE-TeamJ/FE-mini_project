@@ -1,7 +1,4 @@
-import {
-  SignInFormValues,
-  SignInResponse,
-} from "@/app/_components/Auth/SignInForm/types";
+import { SignInFormValues, SignInResponse } from "@/types/auth";
 
 const SUPABASE_URL = "http://localhost:8080";
 
