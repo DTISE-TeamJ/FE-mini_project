@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 type FormLayoutProps = {
   children: React.ReactNode;
@@ -47,16 +48,20 @@ const FormLayout: React.FC<FormLayoutProps> = ({
 
           <div className="flex flex-col mt-4 items-center justify-center text-sm">
             <h3 className="text-gray-700">
-              {title === "Sign In" ? "Don't have an account?" : "Have an account?"}&nbsp;
-              <a className="text-blue-400" href={linkHref}>
+              {title === "Sign In"
+                ? "Don't have an account?"
+                : "Have an account?"}
+              &nbsp;
+              <Link href={linkHref} className="text-blue-400">
                 <span className="">{linkText}</span>
-              </a>
+              </Link>
             </h3>
           </div>
 
           <div className="text-gray-700 flex text-center flex-col mt-4 items-center text-sm">
             <p className="cursor-default">
-              By signing {title === "Sign In" ? "in" : "up"}, you agree to our&nbsp;
+              By signing {title === "Sign In" ? "in" : "up"}, you agree to
+              our&nbsp;
               <a className="text-blue-400" href="#">
                 <span className="cursor-pointer">Terms</span>
               </a>

@@ -29,7 +29,7 @@ const SignInForm: React.FC = () => {
     <FormLayout
       title="Sign In"
       linkText="Sign Up"
-      linkHref="#"
+      linkHref="/auth/signup"
       portraitSrc={SignInPortrait}
       landscapeSrc={SignInLandscape}
     >
