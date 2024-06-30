@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { SignUpFormValues } from "@/types/authTypes";
 import Image from "next/image";
 import InfoIcon from "@/assets/icons/questionMark.svg";
 import EyeOpen from "@/assets/icons/eyeOpen.svg";
 import EyeClose from "@/assets/icons/eyeClose.svg";
+import { SignUpFormValues } from "@/types/auth";
 
 const initialValues: SignUpFormValues = {
   username: "",

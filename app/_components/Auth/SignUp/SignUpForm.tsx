@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { SignUpFormValues } from "@/types/auth";
 import SignupFormContent from "./SignUpFormContent";
-import { signUpUser } from "./ApiSignUp";
 import FormLayout from "../FormLayout";
 import SignUpPortrait from "@/assets/signUpPortrait.webp";
 import SignUpLandscape from "@/assets/signUpLandscape.webp";
+import { signUpUser } from "@/services/signUpService";
 
 const SignUpForm: React.FC = () => {
   const [hasSignedUpMessage, setHasSignedUpMessage] = useState(false);

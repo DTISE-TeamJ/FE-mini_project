@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { SignInFormValues } from "@/types/auth";
 import SignInFormContent from "./SignInFormContent";
-import { signInUser } from "./ApiSignIn";
 import FormLayout from "../FormLayout";
 import SignInPortrait from "@/assets/signUpPortrait.webp";
 import SignInLandscape from "@/assets/signUpLandscape.webp";
+import { signInUser } from "@/services/SignInService";
 
 const SignInForm: React.FC = () => {
   const [hasLoggedInMessage, setHasLoggedInMessage] = useState(false);
