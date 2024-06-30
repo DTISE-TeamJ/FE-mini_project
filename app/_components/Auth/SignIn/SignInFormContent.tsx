@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { SignInFormValues } from "@/types/authTypes";
+import { SignInFormValues } from "@/types/auth";
 
 const initialValues: SignInFormValues = {
   username: "",
