@@ -33,13 +33,14 @@ const MenuList: React.FC = () => {
           Create Event
         </Link>
       </MenuListItem>
-      {/* <MenuListItem className={activePath === "/admin" ? "active" : ""}>
-        <Link href="/admin">
+      <MenuListItem
+        className={activePath === "/dashboard/events-list" ? "active" : ""}>
+        <Link href="/dashboard/events-list">
           <IoHelp />
           MenuList
         </Link>
       </MenuListItem>
-      <MenuListItem className={activePath === "/admin" ? "active" : ""}>
+      {/* <MenuListItem className={activePath === "/admin" ? "active" : ""}>
         <Link href="/admin">
           <IoList />
           MenuList

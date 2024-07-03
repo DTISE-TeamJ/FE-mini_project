@@ -2,17 +2,21 @@
 
 import styled from "styled-components";
 
+interface CardStyleProps {
+  padding?: string;
+}
+
 export const CardListStyle = styled.div`
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
 `;
 
-export const CardStyle = styled.div`
+export const CardStyle = styled.div<CardStyleProps>`
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 20px;
+  padding: ${(props) => props.padding || "20px"};
   border-radius: 10px;
   background: #eee;
   gap: 20px;
