@@ -21,9 +21,9 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
     <html lang="en">
       <body className={inter.className}>
         <CategoryProvider>
-          <Navbar />
+          {/* <Navbar /> */}
           {children}
-          <Footer />
+          {/* <Footer /> */}
         </CategoryProvider>
       </body>
     </html>

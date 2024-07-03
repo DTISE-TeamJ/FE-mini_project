@@ -46,11 +46,11 @@ const Footer: React.FC = () => {
               <span></span>
             </Underline>
           </Heading>
-          <p>ITPL Road</p>
-          <p>Whitefield, Bangalore</p>
-          <p>Karnataka, PIN 560066, India</p>
+          <p>Abbey Road</p>
+          <p>London NW8 9AY</p>
+          <p>United Kingdom</p>
           <EmailId>belandajuara@gmail.co.nl</EmailId>
-          <h4>+123456789</h4>
+          <h4>+44 20 1234 5678</h4>
         </Column>
         <Column>
           <Heading>

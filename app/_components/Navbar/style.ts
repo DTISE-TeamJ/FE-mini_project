@@ -34,9 +34,11 @@ export const StyledLi = styled.li`
 
 export const WrapperIcon = styled.div`
   display: none;
+  cursor: pointer;
 
   @media (min-width: 768px) {
     display: flex;
+    gap: 1.5rem;
   }
 `;
 
