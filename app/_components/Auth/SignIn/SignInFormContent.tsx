@@ -20,6 +20,7 @@ const SignInFormContent: React.FC<{
   ) => void;
   isSubmitting: boolean;
   hasLoggedInMessage: boolean;
+  error: any;
 }> = ({ handleSubmit, isSubmitting, hasLoggedInMessage }) => {
   const labelStyle = "mb-2 text-gray-800 text-lg";
   const formStyle =

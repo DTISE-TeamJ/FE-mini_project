@@ -1,27 +1,73 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { SignInFormValues } from "@/types/auth";
 import SignInFormContent from "./SignInFormContent";
 import FormLayout from "../FormLayout";
 import SignInPortrait from "@/assets/signUpPortrait.webp";
 import SignInLandscape from "@/assets/signUpLandscape.webp";
-import { signInUser } from "@/services/SignInService";
 
 const SignInForm: React.FC = () => {
   const [hasLoggedInMessage, setHasLoggedInMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const { data: session, update } = useSession();
+
+  useEffect(() => {
+    if (session?.user?.role === "ADMIN") {
+      router.push("/dashboard");
+    } else if (session?.user?.role === "USER") {
+      router.push("/");
+    }
+  }, [session?.user, router]);
 
   const handleSubmit = async (
     values: SignInFormValues,
     { resetForm }: { resetForm: () => void }
   ) => {
-    const result = await signInUser(values);
-    window.alert(result.message);
+    setIsSubmitting(true);
+    setError(null);
 
-    if (result.success) {
-      resetForm();
-      setHasLoggedInMessage(true);
-      setTimeout(() => setHasLoggedInMessage(false), 5000);
+    try {
+      const result = await signIn("credentials", {
+        username: values.username,
+        password: values.password,
+        redirect: false,
+      });
+      console.log(result);
+
+      if (result?.error) {
+        window.alert(result.error);
+        console.log(result.error);
+        // The error message from the backend will be available here
+        setError(result.error);
+        return {
+          success: false,
+          message: result.error,
+        };
+      }
+
+      if (result?.ok) {
+        setHasLoggedInMessage(true);
+        await update();
+        return {
+          success: true,
+          message: "You have successfully logged in.",
+        };
+      }
+    } catch (error) {
+      console.error("Error during form submission", error);
+      window.alert("test error");
+      setError((error as Error).message || "Something went wrong");
+      return {
+        success: false,
+        message: (error as Error).message || "Something went wrong",
+      };
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -35,8 +81,9 @@ const SignInForm: React.FC = () => {
     >
       <SignInFormContent
         handleSubmit={handleSubmit}
-        isSubmitting={false}
+        isSubmitting={isSubmitting}
         hasLoggedInMessage={hasLoggedInMessage}
+        error={error}
       />
     </FormLayout>
   );
