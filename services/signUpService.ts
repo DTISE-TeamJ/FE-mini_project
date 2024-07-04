@@ -1,18 +1,21 @@
 import { SignUpFormValues, SignUpResponse } from "@/types/auth";
 
-const SUPABASE_URL = "http://localhost:8080";
-
-export const signUpUser = async (data: SignUpFormValues): Promise<SignUpResponse> => {
+export const signUpUser = async (
+  data: SignUpFormValues
+): Promise<SignUpResponse> => {
   try {
     const { username, email, password, referralCode } = data;
 
-    const response = await fetch(`${SUPABASE_URL}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, email, password, referralCode }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password, referralCode }),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();

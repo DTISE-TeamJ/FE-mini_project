@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/app/_components/Navbar/Navbar";
 import Footer from "@/app/_components/Footer/Footer";
 import { CategoryProvider } from "@/context/CategoryContext";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +21,11 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <CategoryProvider>
-          {/* <Navbar /> */}
-          {children}
-          {/* <Footer /> */}
-        </CategoryProvider>
+        <SessionProvider>
+          <CategoryProvider>
+            {children}
+          </CategoryProvider>
+        </SessionProvider>
       </body>
     </html>
   );

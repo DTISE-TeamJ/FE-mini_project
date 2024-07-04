@@ -12,7 +12,6 @@ export default function CategoryMenu() {
   return (
     <>
       <div className={`overflow-x-scroll whitespace-nowrap scrollbar-hide`}>
-        {" "}
         <ul className="inline-flex space-x-4 py-4">
           {menuCategories.map((item) => (
             <li
