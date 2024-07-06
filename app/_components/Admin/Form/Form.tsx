@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { HiUpload } from "react-icons/hi";
 import { useFormik } from "formik";
@@ -41,6 +42,8 @@ const validationSchema = Yup.object().shape({
   price: Yup.number()
     .required("Price is required")
     .min(0, "Price must be at least 0"),
+  location: Yup.string().required("Location is required"),
+  organization: Yup.string().required("Organization is required"),
 });
 
 const Form: React.FC = () => {
@@ -52,6 +55,8 @@ const Form: React.FC = () => {
       image: null,
       description: "",
       category: "",
+      location: "",
+      organization: "",
       price: "",
     },
     validationSchema,
@@ -85,7 +90,60 @@ const Form: React.FC = () => {
                   value={formik.values.name}
                 />
                 {formik.touched.name && formik.errors.name ? (
-                  <div className="text-red-600">{formik.errors.name}</div>
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.name}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="mb-3 flex items-center">
+              <label
+                htmlFor="location"
+                className="w-1/3 mb-0 flex items-center">
+                Location <span className="text-red-600">*</span>
+              </label>
+              <div className="w-2/3">
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  placeholder="Input your event location..."
+                  required
+                  className="w-full p-2 border border-gray-300 rounded"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.location}
+                />
+                {formik.touched.location && formik.errors.location ? (
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.location}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+            <div className="mb-3 flex items-center">
+              <label
+                htmlFor="organization"
+                className="w-1/3 mb-0 flex items-center">
+                Organization <span className="text-red-600">*</span>
+              </label>
+              <div className="w-2/3">
+                <input
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  placeholder="Input your event organization..."
+                  required
+                  className="w-full p-2 border border-gray-300 rounded"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.organization}
+                />
+                {formik.touched.organization && formik.errors.organization ? (
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.organization}
+                  </div>
                 ) : null}
               </div>
             </div>
@@ -93,14 +151,13 @@ const Form: React.FC = () => {
             <div className="mb-3 flex items-center">
               <label htmlFor="image" className="w-1/3 mb-0 flex items-center">
                 Photo
-                <span className="text-red-600">*</span>
+                <span className="text-red-600 text-sm">*</span>
               </label>
               <div className="w-2/3 relative">
                 <input
                   type="file"
                   id="image"
                   name="image"
-                  // accept="image/png, image/gif, image/jpeg"
                   accept="image/*"
                   required
                   className="absolute cursor-pointer inset-0 w-full h-full opacity-0"
@@ -122,14 +179,16 @@ const Form: React.FC = () => {
                   File size max. 2MB
                 </p>
                 {formik.touched.image && formik.errors.image ? (
-                  <div className="text-red-600">{formik.errors.image}</div>
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.image}
+                  </div>
                 ) : null}
               </div>
             </div>
 
             <div className="mb-3 flex items-start">
               <label htmlFor="description" className="w-1/3 mb-0">
-                Description <span className="text-red-600">*</span>
+                Description <span className="text-red-600 text-sm">*</span>
               </label>
               <div className="w-2/3">
                 <textarea
@@ -139,18 +198,18 @@ const Form: React.FC = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.description}
-                  maxLength={500}
+                  maxLength={250}
                 />
                 <p
                   className={`text-xs mt-1 ${
-                    formik.values.description.length > 500
+                    formik.values.description.length > 250
                       ? "text-red-500"
                       : "text-gray-500"
                   }`}>
-                  {500 - formik.values.description.length} characters remaining
+                  {250 - formik.values.description.length} characters remaining
                 </p>
                 {formik.touched.description && formik.errors.description ? (
-                  <div className="text-red-600">
+                  <div className="text-red-600 text-sm">
                     {formik.errors.description}
                   </div>
                 ) : null}
@@ -162,7 +221,7 @@ const Form: React.FC = () => {
                 htmlFor="category"
                 className="w-1/3 mb-0 flex items-center">
                 Category
-                <span className="text-red-600">*</span>
+                <span className="text-red-600 text-sm">*</span>
               </label>
               <div className="w-2/3">
                 <select
@@ -177,33 +236,12 @@ const Form: React.FC = () => {
                   <option value="paid-event">paid event</option>
                 </select>
                 {formik.touched.category && formik.errors.category ? (
-                  <div className="text-red-600">{formik.errors.category}</div>
+                  <div className="text-red-600 text-sm">
+                    {formik.errors.category}
+                  </div>
                 ) : null}
               </div>
             </div>
-
-            {/* <div className="mb-3 flex items-center">
-              <label htmlFor="price" className="w-1/3 mb-0 flex items-center">
-                Price
-                <span className="text-red-600">*</span>
-              </label>
-              <div className="w-2/3">
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  placeholder="Input price event"
-                  required
-                  className="w-full p-2 border border-gray-300 rounded"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.price}
-                />
-                {formik.touched.price && formik.errors.price ? (
-                  <div className="text-red-600">{formik.errors.price}</div>
-                ) : null}
-              </div>
-            </div> */}
 
             {formik.values.category === "paid-event" && (
               <div className="mb-3 flex items-center">
@@ -224,7 +262,9 @@ const Form: React.FC = () => {
                     value={formik.values.price}
                   />
                   {formik.touched.price && formik.errors.price ? (
-                    <div className="text-red-600">{formik.errors.price}</div>
+                    <div className="text-red-600 text-sm">
+                      {formik.errors.price}
+                    </div>
                   ) : null}
                 </div>
               </div>
@@ -244,143 +284,3 @@ const Form: React.FC = () => {
 };
 
 export default Form;
-
-/*
-const Form: React.FC = () => {
-  const [text, setText] = useState("");
-
-  const handleChange = (event: any) => {
-    const newText = event.target.value;
-    setText(newText);
-  };
-
-  const maxLength = 200;
-
-  const remainingCharacters = maxLength - text.length;
-  const exceededLimit = remainingCharacters < 0;
-
-  return (
-    <>
-      <h1 className="text-center text-2xl">Create New Event</h1>
-      <form>
-        <div className="w-full bg-white p-4">
-          <fieldset className="w-full">
-            <div className="mb-3 flex items-center">
-              <label htmlFor="name" className="w-1/3 mb-0 flex items-center">
-                Event name
-                <span className="text-red-600">*</span>
-              </label>
-              <div className="w-2/3">
-                <input
-                  type="text"
-                  id="name"
-                  placeholder="Input your event name..."
-                  required
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-            </div>
-
-            <div className="mb-3 flex items-center">
-              <label htmlFor="image" className="w-1/3 mb-0 flex items-center">
-                Photo
-                <span className="text-red-600">*</span>
-              </label>
-              <div className="w-2/3 relative">
-                <input
-                  type="file"
-                  id="image"
-                  accept="image/png, image/gif, image/jpeg"
-                  required
-                  className="absolute cursor-pointer inset-0 w-full h-full opacity-0"
-                />
-                <label
-                  htmlFor="image"
-                  className="cursor-pointer flex items-center justify-between w-full h-full p-2 border border-gray-300 rounded text-gray-400">
-                  Upload image <HiUpload className="w-6 h-6 mr-2" />
-                </label>
-                <p className="mb-0 text-[#8A8A8A] text-[10px]">
-                  File size max. 2MB
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-3 flex items-start">
-              <label htmlFor="description" className="w-1/3 mb-0">
-                Description <span className="text-red-600">*</span>
-              </label>
-              <div className="w-2/3">
-                <textarea
-                  id="description"
-                  className="w-full h-36 p-2 border border-gray-300 rounded resize-none"
-                  value={text}
-                  onChange={handleChange}
-                  maxLength={maxLength}
-                />
-                <p
-                  className={`text-xs mt-1 ${
-                    exceededLimit ? "text-red-500" : "text-gray-500"
-                  }`}>
-                  {remainingCharacters} characters remaining
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-3 flex items-center">
-              <label
-                htmlFor="category"
-                className="w-1/3 mb-0 flex items-center">
-                Category
-                <span className="text-red-600">*</span>
-              </label>
-              <div className="w-2/3">
-                <select
-                  id="category"
-                  className="w-full p-2 border border-gray-300 rounded">
-                  <option hidden>Event Category</option>
-                  <option value="free">free</option>
-                  <option value="paid-event">paid event</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="mb-3 flex items-center">
-              <label htmlFor="price" className="w-1/3 mb-0 flex items-center">
-                Price
-                <span className="text-red-600">*</span>
-              </label>
-              <div className="w-2/3">
-                <input
-                  type="number"
-                  id="price"
-                  placeholder="Input price event"
-                  required
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <div className="flex mb-3">
-                <div className="w-1/3">Created at</div>
-                <div className="w-2/3">"edit"</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3">Updated at</div>
-                <div className="w-2/3">edit</div>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-        <div className="flex mt-4">
-          <button
-            type="button"
-            className="flex items-center mr-3 bg-gray-300 text-black py-2 px-4 rounded">
-            Upload
-          </button>
-        </div>
-      </form>
-    </>
-  );
-};
-*/
