@@ -1,14 +1,16 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
+import { cookies } from "next/headers";
 import { auth } from "./auth";
 
 export default auth((request) => {
+  const cookieStore = cookies();
   const { auth: token, nextUrl } = request;
   const isLoggedIn = !!token;
 
   const isAuthPage = nextUrl.pathname.startsWith("/auth/");
   const isDashboardPage = nextUrl.pathname.startsWith("/dashboard");
-  
+
+  console.log(cookieStore.get("jwt"));
   if (isAuthPage) {
     if (isLoggedIn) {
       // User is logged in, redirect away from auth pages

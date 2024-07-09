@@ -24,7 +24,7 @@ const SignInForm: React.FC = () => {
     }
   }, [session?.user, router]);
 
-  console.log(session, "<== session");
+  // console.log(session, "<== session");
 
   /*
   // bang irfan
