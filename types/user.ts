@@ -6,4 +6,9 @@ export interface User {
   name: string;
   profilePicture: string;
   referralCode: string;
+  jwt: string;
+}
+
+export interface JWT {
+  jwt: string;
 }

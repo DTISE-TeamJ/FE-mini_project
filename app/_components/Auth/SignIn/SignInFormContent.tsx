@@ -21,7 +21,7 @@ const SignInFormContent: React.FC<{
   isSubmitting: boolean;
   hasLoggedInMessage: boolean;
   error: any;
-}> = ({ handleSubmit, isSubmitting, hasLoggedInMessage }) => {
+}> = ({ handleSubmit, isSubmitting, hasLoggedInMessage, error }) => {
   const labelStyle = "mb-2 text-gray-800 text-lg";
   const formStyle =
     "bg-white p-4 border-gray-700 shadow-md placeholder:text-sm sm:placeholder:text-base focus:scale-105 ease-in-out duration-300 rounded-lg w-full";
@@ -31,8 +31,7 @@ const SignInFormContent: React.FC<{
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
+      onSubmit={handleSubmit}>
       {() => (
         <Form className="space-y-2 text- flex flex-col relative xl:h-[100%]">
           <label htmlFor="username" className={labelStyle}>
@@ -73,8 +72,7 @@ const SignInFormContent: React.FC<{
               disabled={isSubmitting}
               className="
                     mt-8 p-2 text-white bg-gray-800 shadow-lg rounded-lg w-full
-                    hover:scale-105 transition duration-300 ease-in-out"
-            >
+                    hover:scale-105 transition duration-300 ease-in-out">
               Sign In
             </button>
           </div>
@@ -82,6 +80,10 @@ const SignInFormContent: React.FC<{
             <div className="success-message text-green-500">
               You have successfully logged in
             </div>
+          )}
+
+          {error && (
+            <div className={errorStyle}>Username or password is incorrect</div>
           )}
         </Form>
       )}

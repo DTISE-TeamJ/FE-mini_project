@@ -90,4 +90,7 @@ export const UpgradeButton = styled.button`
   padding: 10px;
   border-radius: 4px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;

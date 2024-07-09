@@ -12,6 +12,10 @@ import {
   FaPinterest,
   FaYoutube,
 } from "react-icons/fa";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { IoClose } from "react-icons/io5";
+import { ImExit } from "react-icons/im";
 
 import {
   NavbarContainer,
@@ -28,17 +32,38 @@ import { SocialIcons } from "../Footer/style";
 
 const Navbar: React.FC = () => {
   const [nav, setNav] = useState(false);
+  const [open, setOpen] = useState(false);
   const [logo, setLogo] = useState(false);
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const handleNav = () => {
     setNav(!nav);
     setLogo(!logo);
+  };
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    closeModal();
+    router.push("/");
+  };
+
+  const handleSignIn = () => {
+    router.push("/auth/signin");
+  };
+
+  const openModal = () => {
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    setOpen(false);
   };
 
   return (
     <NavbarContainer>
       <div className="logoNavbar">
         <h1
-          onClick={handleNav}
           className={`text-3xl md:text-4xl font-bold text-white ${
             logo ? "hidden" : "block"
           }`}>
@@ -54,12 +79,60 @@ const Navbar: React.FC = () => {
         <StyledLi>Book</StyledLi>
       </StyledUl>
 
+      {open && (
+        <div
+          onClick={closeModal}
+          className="fixed inset-0 flex justify-center items-center transition-colors visible bg-black/20">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-xl shadow p-6 transition-all scale-100 opacity-100">
+            <button
+              onClick={closeModal}
+              aria-label="Close"
+              className="absolute top-2 right-2 p-1 rounded-lg text-gray-400 bg-white hover:bg-gray-50 hover:text-gray-600">
+              <IoClose size={24} />
+            </button>
+
+            <div className="text-center w-72">
+              <ImExit size={44} className="mx-auto text-red-500" />
+              <div className="mx-auto my-4 w-60">
+                <h3 className="text-lg font-black text-gray-800">
+                  Confirm Exit
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Are you sure you want to exit?
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <button
+                  className="p-2 bg-red-600 w-full rounded-lg text-white hover:bg-red-500"
+                  onClick={handleLogout}>
+                  Exit
+                </button>
+                <button
+                  className="p-2 bg-blue-600 w-full rounded-lg text-white hover:bg-blue-500"
+                  onClick={closeModal}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <WrapperIcon>
         <Icon>
           <BiSearch size={20} />
         </Icon>
         <Icon>
-          <BsPerson size={20} />
+          {session?.user?.username ? (
+            <div className="flex gap-2" onClick={openModal}>
+              <BsPerson size={20} />
+              {session.user.username}
+            </div>
+          ) : (
+            ""
+          )}
         </Icon>
       </WrapperIcon>
 
@@ -86,10 +159,21 @@ const Navbar: React.FC = () => {
           <ListItem>View</ListItem>
           <ListItem>Book</ListItem>
           <div className="flex flex-col">
-            <Button className="my-6">Search</Button>
-            <Button>Account</Button>
+            {session?.user?.username ? (
+              <>
+                <Button>{session.user.username}</Button>
+                <Button className="my-6" onClick={openModal}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button className="my-6" onClick={handleSignIn}>
+                Sign In
+              </Button>
+            )}
           </div>
-          <SosialIconWrapper>
+
+          {/* <SosialIconWrapper>
             <SocialIcons>
               <FaFacebook size={20} />
             </SocialIcons>
@@ -105,7 +189,7 @@ const Navbar: React.FC = () => {
             <SocialIcons>
               <FaInstagram size={20} />
             </SocialIcons>
-          </SosialIconWrapper>
+          </SosialIconWrapper> */}
         </List>
       </div>
     </NavbarContainer>

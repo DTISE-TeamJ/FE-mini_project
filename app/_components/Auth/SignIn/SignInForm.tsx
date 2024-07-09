@@ -24,6 +24,10 @@ const SignInForm: React.FC = () => {
     }
   }, [session?.user, router]);
 
+  // console.log(session, "<== session");
+
+  /*
+  // bang irfan
   const handleSubmit = async (
     values: SignInFormValues,
     { resetForm }: { resetForm: () => void }
@@ -37,7 +41,8 @@ const SignInForm: React.FC = () => {
         password: values.password,
         redirect: false,
       });
-      console.log(result);
+
+      console.log(result, "<== test");
 
       if (result?.error) {
         window.alert(result.error);
@@ -70,6 +75,49 @@ const SignInForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+  */
+
+  const handleSubmit = async (
+    values: SignInFormValues,
+    { resetForm }: { resetForm: () => void }
+  ) => {
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        username: values.username,
+        password: values.password,
+      });
+
+      if (result?.error) {
+        setError(result.error);
+        return {
+          success: false,
+          message: result.error,
+        };
+      }
+
+      if (result?.ok) {
+        setHasLoggedInMessage(true);
+        await update();
+        return {
+          success: true,
+          message: "You have successfully logged in.",
+        };
+      }
+    } catch (error) {
+      const message = (error as any).message || "Something went wrong";
+      setError(message);
+      return {
+        success: false,
+        message,
+      };
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <FormLayout
@@ -77,8 +125,7 @@ const SignInForm: React.FC = () => {
       linkText="Sign Up"
       linkHref="/auth/signup"
       portraitSrc={SignInPortrait}
-      landscapeSrc={SignInLandscape}
-    >
+      landscapeSrc={SignInLandscape}>
       <SignInFormContent
         handleSubmit={handleSubmit}
         isSubmitting={isSubmitting}
