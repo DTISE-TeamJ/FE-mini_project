@@ -4,9 +4,8 @@ import Container from "../../../_components/Admin/Container/Container";
 import Header from "../../../_components/Admin/Header/Header";
 import Content from "../../../_components/Admin/Container/Content";
 import Form from "@/app/_components/Admin/Form/Form";
-// import CardList from "../../_components/Admin/Card/CardList";
 
-const CreateEvent = () => {
+const CreateEvent: React.FC = () => {
   return (
     <div className="app flex">
       <Sidebar />
