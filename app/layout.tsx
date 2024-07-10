@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/app/_components/Navbar/Navbar";
-import Footer from "@/app/_components/Footer/Footer";
 import { CategoryProvider } from "@/context/CategoryContext";
 import { SessionProvider } from "next-auth/react";
+import ReduxProvider from "@/store/redux-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,9 +21,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider>
-          <CategoryProvider>
-            {children}
-          </CategoryProvider>
+          <CategoryProvider>{children}</CategoryProvider>
         </SessionProvider>
       </body>
     </html>
