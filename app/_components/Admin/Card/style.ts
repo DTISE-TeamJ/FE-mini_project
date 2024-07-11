@@ -18,7 +18,8 @@ export const CardStyle = styled.div<CardStyleProps>`
   flex: 1;
   padding: ${(props) => props.padding || "20px"};
   border-radius: 10px;
-  background: #eee;
+  // background: #eee;
+  background: #fff;
   gap: 20px;
 `;
 

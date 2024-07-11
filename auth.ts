@@ -27,7 +27,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/login`,
             {
               method: "POST",
               body: JSON.stringify(credentials),
@@ -44,7 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           const { user, jwt } = result.data;
           const cookieStore = cookies();
-          console.log(cookieStore.get("jwt"));
+          // console.log(cookieStore.get("jwt"));
           cookieStore.set("jwt", jwt);
           return {
             ...user,
