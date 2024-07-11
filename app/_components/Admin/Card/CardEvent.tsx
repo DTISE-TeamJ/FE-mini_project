@@ -5,7 +5,10 @@ import { CardStyle } from "./style";
 import CustomModal from "../../(shared)/CustomModal";
 import { useAppDispatch } from "@/store";
 import { useRouter } from "next/navigation";
-import { deleteEvent } from "@/store/action/event-slice";
+import { deleteEvent, fetchEvents } from "@/store/action/event-slice";
+import { FaCalendar, FaClock, FaMapMarker } from "react-icons/fa";
+import { IoIosPricetags } from "react-icons/io";
+import moment from "moment";
 
 interface Event {
   id: number;
@@ -36,33 +39,7 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const startDate = new Date(event.start);
-  const endDate = new Date(event.end);
-  const eventDate = new Date(event.date);
-
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    month: "long",
-    day: "numeric",
-  };
-
-  const timeOptions: Intl.DateTimeFormatOptions = {
-    hour: "numeric",
-    minute: "numeric",
-  };
-
-  const formattedEventDate = `${eventDate.toLocaleDateString(
-    undefined,
-    dateOptions
-  )}: ${eventDate.toLocaleTimeString(undefined, timeOptions)}`;
-
-  const formattedStartTime = startDate.toLocaleTimeString(
-    undefined,
-    timeOptions
-  );
-
-  const formattedEndTime = endDate.toLocaleTimeString(undefined, timeOptions);
-
-  // console.log(formattedEventDate, "<== format event date");
+  console.log({ event }, "<== prop event");
 
   const openModal = () => {
     setOpen(true);
@@ -72,10 +49,15 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
     setOpen(false);
   };
 
-  const handleDelete = () => {
-    // Handle delete logic here
-    dispatch(deleteEvent(event.id));
-    closeModal();
+  const handleDelete = async () => {
+    try {
+      await dispatch(deleteEvent(event.id));
+    } catch (error) {
+      console.error("Failed to delete event", error);
+    } finally {
+      dispatch(fetchEvents());
+      closeModal();
+    }
   };
 
   const handleEdit = () => {
@@ -107,7 +89,7 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
   return (
     <CardStyle padding="0">
       <Image
-        src={event.pic}
+        src={event?.pic}
         quality={100}
         height={100}
         width={100}
@@ -125,14 +107,31 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
         onPrimaryAction={modalContent.primaryAction}
       />
 
-      <div className="mx-2">
-        <p>{event.description}</p>
-        <h1 className="my-2">{event.name}</h1>
-        <p>{event.location}</p>
-        <p>
-          {formattedStartTime} - {formattedEndTime}
-        </p>
-        <p className="text-red-600 mt-6 mb-2">{formattedEventDate}</p>
+      <div className="mx-4 my-2">
+        <p>{event?.description}</p>
+        <h1 className="my-2 text-gray-800">{event?.name}</h1>
+
+        <div className="flex items-start gap-2 align-middle my-2">
+          <FaCalendar width={20} height={20} />
+          <span className="text-[#000]">
+            {moment(event?.start).format("ll")} -{" "}
+            {moment(event?.end).format("ll")}
+          </span>
+        </div>
+        <div className="flex items-start gap-2 align-middle my-2">
+          <FaClock width={20} height={20} />
+          <span className="text-[#000]">
+            {moment(event?.start).format("LT")} -{" "}
+            {moment(event?.end).format("LT")}
+          </span>
+        </div>
+
+        <div className="flex items-start align-middle gap-2 my-2">
+          <FaMapMarker width={20} height={20} />
+          {/* <span className="text-gray-400">{event?.location}</span> */}
+          <span className="text-[#000]">{event?.location}</span>
+        </div>
+
         <div className="flex justify-around gap-4">
           <button
             onClick={showEditModal}

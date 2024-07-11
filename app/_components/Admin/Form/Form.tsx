@@ -86,7 +86,7 @@ const Form: React.FC = () => {
   };
 
   const { data: session } = useSession();
-  console.log(session?.user, "<== session");
+  // console.log(session?.user, "<== session");
 
   const formik = useFormik({
     initialValues: {

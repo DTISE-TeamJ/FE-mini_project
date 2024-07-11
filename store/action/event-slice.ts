@@ -32,7 +32,7 @@ const initialState: EventsState = {
 
 const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/all-events`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/all-events`,
     {
       withCredentials: true,
     }
@@ -45,11 +45,12 @@ const deleteEvent = createAsyncThunk(
   "events/deleteEvent",
   async (id: number) => {
     await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/delete-event/${id}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/delete-event/${id}`,
       {
         withCredentials: true,
       }
     );
+
     return id;
   }
 );
@@ -58,7 +59,7 @@ const editEvent = createAsyncThunk(
   "events/editEvent",
   async ({ id, updatedEvent }: EditEventPayload) => {
     const { data } = await axios.put(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/edit-event/${id}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/edit-event/${id}`,
       updatedEvent,
       {
         withCredentials: true,

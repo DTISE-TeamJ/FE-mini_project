@@ -8,6 +8,7 @@ import Organizer from "../_components/Home/Organizer/Organizer";
 import PromoCta from "../_components/Home/PromoCta/PromoCta";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import ReduxProvider from "@/store/redux-provider";
 
 const Home: React.FC = () => {
   // Check session IF user.role === "ADMIN",redirect to /dashboard
@@ -21,12 +22,14 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <Hero />
-      <EventCategory />
-      <EventLocation />
-      <EventCta />
-      <Organizer />
-      <PromoCta />
+      <ReduxProvider>
+        <Hero />
+        <EventCategory />
+        <EventLocation />
+        <EventCta />
+        <Organizer />
+        <PromoCta />
+      </ReduxProvider>
     </>
   );
 };

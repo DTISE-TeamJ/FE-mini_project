@@ -24,59 +24,6 @@ const SignInForm: React.FC = () => {
     }
   }, [session?.user, router]);
 
-  // console.log(session, "<== session");
-
-  /*
-  // bang irfan
-  const handleSubmit = async (
-    values: SignInFormValues,
-    { resetForm }: { resetForm: () => void }
-  ) => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await signIn("credentials", {
-        username: values.username,
-        password: values.password,
-        redirect: false,
-      });
-
-      console.log(result, "<== test");
-
-      if (result?.error) {
-        window.alert(result.error);
-        console.log(result.error);
-        // The error message from the backend will be available here
-        setError(result.error);
-        return {
-          success: false,
-          message: result.error,
-        };
-      }
-
-      if (result?.ok) {
-        setHasLoggedInMessage(true);
-        await update();
-        return {
-          success: true,
-          message: "You have successfully logged in.",
-        };
-      }
-    } catch (error) {
-      console.error("Error during form submission", error);
-      window.alert("test error");
-      setError((error as Error).message || "Something went wrong");
-      return {
-        success: false,
-        message: (error as Error).message || "Something went wrong",
-      };
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-  */
-
   const handleSubmit = async (
     values: SignInFormValues,
     { resetForm }: { resetForm: () => void }
