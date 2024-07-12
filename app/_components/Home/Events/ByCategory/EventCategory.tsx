@@ -12,7 +12,7 @@ const EventCategory: React.FC = () => {
     (state: RootState) => state.eventStore
   );
 
-  console.log(events, "<== from event category");
+  // console.log(events, "<== from event category");
 
   useEffect(() => {
     dispatch(fetchEvents());

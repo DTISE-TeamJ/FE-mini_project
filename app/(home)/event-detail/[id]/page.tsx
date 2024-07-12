@@ -10,7 +10,7 @@ import { RiUserStarFill } from "react-icons/ri";
 import moment from "moment";
 import BrokenImage from "@/assets/broken-image.png";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 interface EventDetailProps {
   params: {
@@ -34,13 +34,10 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
 
   const { data: session, status } = useSession();
   const router = useRouter();
-  console.log(status, "<== statusnya");
 
   const eventDetail = useAppSelector((state: RootState) =>
     state?.eventStore?.events?.find((event) => event?.id === id)
   );
-
-  console.log(eventDetail?.ticketTypes, "<== event detail");
 
   const loading = useAppSelector(
     (state: RootState) => state?.eventStore?.loading
@@ -49,12 +46,25 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
   const error = useAppSelector((state: RootState) => state?.eventStore?.error);
 
   useEffect(() => {
-    if (status === "authenticated" && session.user.role !== "USER") {
-      router.push("/");
-    } else if (status === "authenticated" && session.user.role === "USER") {
-      dispatch(fetchEventDetail(id));
+    if (status === "loading") return;
+
+    if (status === "authenticated") {
+      if (session?.user?.role === "USER") {
+        dispatch(fetchEventDetail(id));
+      } else {
+        router.push("/");
+      }
+    } else {
+      signIn(undefined, {
+        callbackUrl: `${window.location.origin}/event-detail/${id}`,
+      });
+      // signIn("credentials", {
+      //   callbackUrl: `${window.location.origin}/event-detail/${id}`,
+      // });
     }
   }, [dispatch, id, router, session]);
+
+  console.log(window.location.origin);
 
   const formatPrice = (price: number | undefined) => {
     if (!price) return "";

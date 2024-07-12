@@ -11,7 +11,7 @@ interface Event {
   start: string;
   end: string;
   pic: string;
-  eventCategory: [];
+  eventCategory: { id: number; name: string };
   user: [];
   ticketTypes: [];
   promos: [];
