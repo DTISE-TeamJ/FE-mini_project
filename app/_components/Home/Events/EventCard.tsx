@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
-// import { Event } from "@/types/event";
 import { FaCalendar, FaClock, FaMapMarker } from "react-icons/fa";
 import { IoIosPricetags } from "react-icons/io";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
 interface Event {
   id: number;
@@ -23,9 +23,14 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  // console.log(event, "<==");
+  const router = useRouter();
+
+  const handleDetail = () => {
+    router.push(`/event-detail/${event.id}`);
+  };
+
   return (
-    <div className="shadow-md rounded-b-2xl bg-white">
+    <div className="shadow-md rounded-b-2xl bg-white" onClick={handleDetail}>
       <div className="relative">
         <Image
           src={event?.pic}

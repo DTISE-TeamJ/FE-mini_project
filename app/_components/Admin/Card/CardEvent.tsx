@@ -89,7 +89,7 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
   return (
     <CardStyle padding="0">
       <Image
-        src={event?.pic}
+        src={event.pic}
         quality={100}
         height={100}
         width={100}
@@ -108,28 +108,28 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
       />
 
       <div className="mx-4 my-2">
-        <p>{event?.description}</p>
-        <h1 className="my-2 text-gray-800">{event?.name}</h1>
+        <p>{event.description}</p>
+        <h1 className="my-2 text-gray-800">{event.name}</h1>
 
         <div className="flex items-start gap-2 align-middle my-2">
           <FaCalendar width={20} height={20} />
           <span className="text-[#000]">
-            {moment(event?.start).format("ll")} -{" "}
-            {moment(event?.end).format("ll")}
+            {moment(event.start).format("ll")} -{" "}
+            {moment(event.end).format("ll")}
           </span>
         </div>
         <div className="flex items-start gap-2 align-middle my-2">
           <FaClock width={20} height={20} />
           <span className="text-[#000]">
-            {moment(event?.start).format("LT")} -{" "}
-            {moment(event?.end).format("LT")}
+            {moment(event.start).format("LT")} -{" "}
+            {moment(event.end).format("LT")}
           </span>
         </div>
 
         <div className="flex items-start align-middle gap-2 my-2">
           <FaMapMarker width={20} height={20} />
-          {/* <span className="text-gray-400">{event?.location}</span> */}
-          <span className="text-[#000]">{event?.location}</span>
+          {/* <span className="text-gray-400">{event.location}</span> */}
+          <span className="text-[#000]">{event.location}</span>
         </div>
 
         <div className="flex justify-around gap-4">

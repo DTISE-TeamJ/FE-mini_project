@@ -18,6 +18,7 @@ const ListEvents: React.FC = () => {
   );
 
   console.log(events, "<== events");
+  console.log(error, "<== error");
 
   useEffect(() => {
     dispatch(fetchEvents());
@@ -63,7 +64,7 @@ const ListEvents: React.FC = () => {
           <h1>List Events</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {events.map((event) => (
-              <CardEvent key={event.id} event={event} />
+              <CardEvent key={event?.id} event={event} />
             ))}
           </div>
         </Content>

@@ -13,10 +13,10 @@ export default function HomeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section>
+    <>
       <Navbar />
       {children}
       <Footer />
-    </section>
+    </>
   );
 }

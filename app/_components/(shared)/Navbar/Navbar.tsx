@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { BsPerson } from "react-icons/bs";
-import { BiSearch } from "react-icons/bi";
+import { FaCartShopping } from "react-icons/fa6";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import {
@@ -122,7 +122,7 @@ const Navbar: React.FC = () => {
 
       <WrapperIcon>
         <Icon>
-          <BiSearch size={20} />
+          <FaCartShopping size={20} />
         </Icon>
         <Icon>
           {session?.user?.username ? (
