@@ -9,7 +9,7 @@ export const FooterContainer = styled.footer`
   background: linear-gradient(to right, #00093c, #2d0b00);
   color: #fff;
   padding: 100px 0 30px;
-  border-top-left-radius: 125px;
+  // border-top-left-radius: 125px;
   font-size: 13px;
   line-height: 20px;
 

@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
-// import { Event } from "@/types/event";
 import { FaCalendar, FaClock, FaMapMarker } from "react-icons/fa";
 import { IoIosPricetags } from "react-icons/io";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
 interface Event {
   id: number;
@@ -15,7 +15,10 @@ interface Event {
   start: string;
   end: string;
   pic: string;
-  // Add other event properties as needed
+  eventCategory: { id: number; name: string };
+  user: [];
+  ticketTypes: [];
+  promos: [];
 }
 
 interface EventCardProps {
@@ -23,9 +26,14 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  // console.log(event, "<==");
+  const router = useRouter();
+
+  const handleDetail = () => {
+    router.push(`/event-detail/${event.id}`);
+  };
+
   return (
-    <div className="shadow-md rounded-b-2xl bg-white">
+    <div className="shadow-md rounded-b-2xl bg-white" onClick={handleDetail}>
       <div className="relative">
         <Image
           src={event?.pic}
@@ -36,8 +44,8 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           rel="preload"
           className="rounded-t-[10px] w-full h-full"
         />
-        <div className="absolute bg-white/50 p-2 rounded-xl right-[5%] bottom-[5%]">
-          category
+        <div className="absolute bg-white/50 p-2 rounded-s-full text-xs text-[#353535] right-[-2%] bottom-[0%]">
+          {event?.eventCategory?.name}
         </div>
       </div>
       <div className="p-4 flex flex-col gap-2">

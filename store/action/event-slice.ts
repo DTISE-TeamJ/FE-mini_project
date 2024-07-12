@@ -11,6 +11,10 @@ interface Event {
   start: string;
   end: string;
   pic: string;
+  eventCategory: { id: number; name: string };
+  user: [];
+  ticketTypes: [];
+  promos: [];
 }
 
 interface EditEventPayload {
@@ -32,14 +36,28 @@ const initialState: EventsState = {
 
 const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
   const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/all-events`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events`,
     {
-      withCredentials: true,
+      // withCredentials: true,
     }
   );
 
   return data.data;
 });
+
+const fetchEventDetail = createAsyncThunk(
+  "events/fetchEventDetail",
+  async (id: number) => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return data.data;
+  }
+);
 
 const deleteEvent = createAsyncThunk(
   "events/deleteEvent",
@@ -69,23 +87,6 @@ const editEvent = createAsyncThunk(
   }
 );
 
-/*
-const fetchEvents = createAsyncThunk(
-  'events/fetchEvents',
-  async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/all-events`, {
-      method: 'GET',
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch events');
-    }
-    const data = await response.json();
-    return data.data;
-  }
-);
-*/
-
 const eventsSlice = createSlice({
   name: "events",
   initialState,
@@ -105,6 +106,26 @@ const eventsSlice = createSlice({
       .addCase(fetchEvents.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch events";
+      })
+      .addCase(fetchEventDetail.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        fetchEventDetail.fulfilled,
+        (state, action: PayloadAction<Event>) => {
+          const event = action.payload;
+          const index = state.events.findIndex((e) => e.id === event.id);
+          if (index !== -1) {
+            state.events[index] = event;
+          } else {
+            state.events.push(event);
+          }
+          state.loading = false;
+        }
+      )
+      .addCase(fetchEventDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch event detail";
       })
       .addCase(deleteEvent.pending, (state) => {
         state.loading = true;
@@ -143,6 +164,6 @@ const eventsSlice = createSlice({
   },
 });
 
-export { fetchEvents, deleteEvent, editEvent };
+export { fetchEvents, fetchEventDetail, deleteEvent, editEvent };
 
 export default eventsSlice;

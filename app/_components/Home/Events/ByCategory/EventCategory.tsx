@@ -5,9 +5,6 @@ import EventCard from "../EventCard";
 import { RootState, useAppDispatch, useAppSelector } from "@/store";
 import { fetchEvents } from "@/store/action/event-slice";
 import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
-import HeroSkeleton from "@/app/_components/Skeleton/HeroSkeleton";
-import NavbarSkeleton from "@/app/_components/Skeleton/NavbarSkeleton";
-import FooterSkeleton from "@/app/_components/Skeleton/FooterSkeleton";
 
 const EventCategory: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +12,7 @@ const EventCategory: React.FC = () => {
     (state: RootState) => state.eventStore
   );
 
-  console.log(events, "<== from event category");
+  // console.log(events, "<== from event category");
 
   useEffect(() => {
     dispatch(fetchEvents());
@@ -28,14 +25,11 @@ const EventCategory: React.FC = () => {
   if (loading) {
     return (
       <div className="mx-4 my-2">
-        {/* <NavbarSkeleton /> */}
-        {/* <HeroSkeleton /> */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {[...Array(10)].map((_, index) => (
             <CardEventSkeleton key={index} />
           ))}
         </div>
-        {/* <FooterSkeleton /> */}
       </div>
     );
   }
