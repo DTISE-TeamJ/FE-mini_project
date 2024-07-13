@@ -9,7 +9,6 @@ export const FooterContainer = styled.footer`
   background: linear-gradient(to right, #00093c, #2d0b00);
   color: #fff;
   padding: 100px 0 30px;
-  // border-top-left-radius: 125px;
   font-size: 13px;
   line-height: 20px;
 
@@ -20,11 +19,17 @@ export const FooterContainer = styled.footer`
 
 export const Row = styled.div`
   width: 85%;
-  margin: auto;
+  margin-left: 16px;
+  margin-right: 16px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
+
+  @media (min-width: 768px) {
+    margin-left: auto;
+    margin-right: auto;
+  }
 `;
 
 export const Column = styled.div`
@@ -150,6 +155,15 @@ export const SocialIcons = styled.div`
     color: #000;
     margin-right: 10px;
     cursor: pointer;
+  }
+
+  @media (max-width: 576px) {
+    justify-content: space-evenly;
+    gap: 20px;
+
+    .fab {
+      margin-right: 0;
+    }
   }
 `;
 

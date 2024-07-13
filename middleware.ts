@@ -10,7 +10,11 @@ export default auth((request) => {
   const isAuthPage = nextUrl.pathname.startsWith("/auth/");
   const isDashboardPage = nextUrl.pathname.startsWith("/dashboard");
 
+  const sessionToken = cookieStore.get("session-jwt");
+  const jwtToken = cookieStore.get("jwt");
+
   console.log(cookieStore.get("jwt"));
+
   if (isAuthPage) {
     if (isLoggedIn) {
       // User is logged in, redirect away from auth pages
@@ -31,6 +35,16 @@ export default auth((request) => {
     }
     // User is an admin, allow access to dashboard
     return NextResponse.next();
+  }
+
+  if (!token) {
+    // If tokens are missing, ensure to delete any existing cookies
+    if (sessionToken || jwtToken) {
+      const response = NextResponse.redirect(request.url);
+      response.cookies.delete("session-jwt");
+      response.cookies.delete("jwt");
+      return response;
+    }
   }
 
   // For all other routes, allow access

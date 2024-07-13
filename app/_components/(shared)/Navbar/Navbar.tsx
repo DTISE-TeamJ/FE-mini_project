@@ -5,18 +5,8 @@ import { BsPerson } from "react-icons/bs";
 import { FaCartShopping } from "react-icons/fa6";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
-import {
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-  FaPinterest,
-  FaYoutube,
-} from "react-icons/fa";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { IoClose } from "react-icons/io5";
-import { ImExit } from "react-icons/im";
-
 import {
   NavbarContainer,
   StyledUl,
@@ -25,15 +15,15 @@ import {
   List,
   Button,
   Icon,
-  SosialIconWrapper,
   StyledLi,
 } from "./style";
-import { SocialIcons } from "../Footer/style";
+import CustomModal from "../CustomModal";
+import { LogInIcon } from "../../Admin/Header/style";
 
 const Navbar: React.FC = () => {
   const [nav, setNav] = useState(false);
-  const [open, setOpen] = useState(false);
   const [logo, setLogo] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -53,16 +43,24 @@ const Navbar: React.FC = () => {
   };
 
   const openModal = () => {
-    setOpen(true);
+    setShowModal(true);
   };
 
   const closeModal = () => {
-    setOpen(false);
+    setShowModal(false);
+  };
+
+  const handleCart = () => {
+    router.push("/cart");
+  };
+
+  const handleHome = () => {
+    router.push("/");
   };
 
   return (
     <NavbarContainer>
-      <div className="logoNavbar">
+      <div className="logoNavbar cursor-pointer" onClick={handleHome}>
         <h1
           className={`text-3xl md:text-4xl font-bold text-white ${
             logo ? "hidden" : "block"
@@ -79,56 +77,27 @@ const Navbar: React.FC = () => {
         <StyledLi>Book</StyledLi>
       </StyledUl>
 
-      {open && (
-        <div
-          onClick={closeModal}
-          className="fixed inset-0 flex justify-center items-center transition-colors visible bg-black/20">
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-xl shadow p-6 transition-all scale-100 opacity-100">
-            <button
-              onClick={closeModal}
-              aria-label="Close"
-              className="absolute top-2 right-2 p-1 rounded-lg text-gray-400 bg-white hover:bg-gray-50 hover:text-gray-600">
-              <IoClose size={24} />
-            </button>
-
-            <div className="text-center w-72">
-              <ImExit size={44} className="mx-auto text-red-500" />
-              <div className="mx-auto my-4 w-60">
-                <h3 className="text-lg font-black text-gray-800">
-                  Confirm Exit
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Are you sure you want to exit?
-                </p>
-              </div>
-              <div className="flex gap-4">
-                <button
-                  className="p-2 bg-red-600 w-full rounded-lg text-white hover:bg-red-500"
-                  onClick={handleLogout}>
-                  Exit
-                </button>
-                <button
-                  className="p-2 bg-blue-600 w-full rounded-lg text-white hover:bg-blue-500"
-                  onClick={closeModal}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <CustomModal
+        open={showModal}
+        onClose={closeModal}
+        title="Confirm Exit"
+        content="Are you sure you want to logout?"
+        primaryActionText="Logout"
+        onPrimaryAction={handleLogout}
+      />
 
       <WrapperIcon>
-        <Icon>
+        <Icon onClick={handleCart}>
           <FaCartShopping size={20} />
         </Icon>
         <Icon>
           {session?.user?.username ? (
-            <div className="flex gap-2" onClick={openModal}>
+            <div className="flex gap-1 items-center">
               <BsPerson size={20} />
               {session.user.username}
+              <div onClick={openModal}>
+                <LogInIcon className="pointer ms-3" size={20} />
+              </div>
             </div>
           ) : (
             ""
@@ -136,12 +105,18 @@ const Navbar: React.FC = () => {
         </Icon>
       </WrapperIcon>
 
-      <div onClick={handleNav} className="md:hidden z-10">
-        {nav ? (
-          <AiOutlineClose className="text-black" size={20} />
-        ) : (
-          <HiOutlineMenuAlt4 className="text-white" size={20} />
-        )}
+      <div className="md:hidden z-10 flex gap-4">
+        <Icon onClick={handleCart} className="md:hidden z-10">
+          <FaCartShopping size={20} />
+        </Icon>
+
+        <div onClick={handleNav} className="md:hidden z-10">
+          {nav ? (
+            <AiOutlineClose className="text-black" size={20} />
+          ) : (
+            <HiOutlineMenuAlt4 className="text-white" size={20} />
+          )}
+        </div>
       </div>
 
       <div
@@ -172,24 +147,6 @@ const Navbar: React.FC = () => {
               </Button>
             )}
           </div>
-
-          {/* <SosialIconWrapper>
-            <SocialIcons>
-              <FaFacebook size={20} />
-            </SocialIcons>
-            <SocialIcons>
-              <FaTwitter size={20} />
-            </SocialIcons>
-            <SocialIcons>
-              <FaYoutube size={20} />
-            </SocialIcons>
-            <SocialIcons>
-              <FaPinterest size={20} />
-            </SocialIcons>
-            <SocialIcons>
-              <FaInstagram size={20} />
-            </SocialIcons>
-          </SosialIconWrapper> */}
         </List>
       </div>
     </NavbarContainer>
