@@ -25,7 +25,10 @@ const Home: React.FC = () => {
 
   return (
     <ReduxProvider>
-      <Hero searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <Hero
+        // searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
       <EventCategory searchTerm={searchTerm} />
       <EventLocation />
       <EventCta />
@@ -36,48 +39,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
-// useEffect(() => {
-//   const handleRouteChange = (url: string) => {
-//     if (url.includes("/event-detail")) {
-//       if (!session) {
-//         router.replace("/auth/signin");
-//       }
-//     }
-//   };
-
-//   const cleanup = () => {
-//     router.off("routeChangeStart", handleRouteChange);
-//   };
-
-//   router.on("routeChangeStart", handleRouteChange);
-//   return cleanup;
-// }, [session, router]);
-
-// // Check session on mount to display session expired modal if necessary
-// useEffect(() => {
-//   if (!session) {
-//     setShowSessionExpiredModal(true);
-//   }
-// }, [session]);
-
-// const handleCloseModal = () => {
-//   setShowSessionExpiredModal(false);
-// };
-
-// const handleLoginAgain = () => {
-//   console.log("Redirecting to login page...");
-//   router.push("/auth/signin");
-//   setShowSessionExpiredModal(false);
-// };
-
-{
-  /* <CustomModal
-        open={showSessionExpiredModal}
-        onClose={handleCloseModal}
-        title="Session Expired"
-        content="Your session has expired. Please log in again."
-        primaryActionText="Log In Again"
-        onPrimaryAction={handleLoginAgain}
-      /> */
-}
