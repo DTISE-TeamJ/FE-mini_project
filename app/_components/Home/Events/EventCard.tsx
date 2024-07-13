@@ -29,7 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const router = useRouter();
 
   const handleDetail = () => {
-    router.push(`/event-detail/${event.id}`);
+    router.push(`/event-detail/${event?.id}/${event?.name}`);
   };
 
   return (

@@ -45,6 +45,20 @@ const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
   return data.data;
 });
 
+const searchEvents = createAsyncThunk(
+  "events/searchEvents",
+  async (searchTerm: string) => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/search`,
+      {
+        params: { q: searchTerm },
+        // withCredentials: true,
+      }
+    );
+    return data.data;
+  }
+);
+
 const fetchEventDetail = createAsyncThunk(
   "events/fetchEventDetail",
   async (id: number) => {
@@ -107,6 +121,20 @@ const eventsSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Failed to fetch events";
       })
+      .addCase(searchEvents.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        searchEvents.fulfilled,
+        (state, action: PayloadAction<Event[]>) => {
+          state.events = action.payload;
+          state.loading = false;
+        }
+      )
+      .addCase(searchEvents.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to search events";
+      })
       .addCase(fetchEventDetail.pending, (state) => {
         state.loading = true;
       })
@@ -164,6 +192,6 @@ const eventsSlice = createSlice({
   },
 });
 
-export { fetchEvents, fetchEventDetail, deleteEvent, editEvent };
+export { fetchEvents, searchEvents, fetchEventDetail, deleteEvent, editEvent };
 
 export default eventsSlice;

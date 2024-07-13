@@ -6,20 +6,17 @@ import EventCard from "../EventCard";
 
 const locations = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"];
 
-const EventLocation = () => {
+const EventLocation: React.FC = () => {
   return (
-    <>
-      <Wrapper>
-        <div className="py-2 text-3xl font-semibold">
-          Discover your wave's sweet spot
-        </div>
-        <LocationMenu locations={locations} />
+    <Wrapper>
+      <div className="py-2 text-3xl font-semibold">
+        Discover your wave's sweet spot
+      </div>
+      <LocationMenu locations={locations} />
 
-        {/* Should be EventShowcase instead of EventCard */}
-        <EventCard />
-        
-      </Wrapper>
-    </>
+      {/* Should be EventShowcase instead of EventCard */}
+      {/* <EventCard /> */}
+    </Wrapper>
   );
 };
 

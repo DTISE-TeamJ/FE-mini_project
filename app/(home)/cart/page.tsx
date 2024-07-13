@@ -45,8 +45,8 @@ const Payment: React.FC = () => {
 
   return (
     <div className="bg-custom-gradient w-full h-full overflow-x-hidden">
-      <h1 className="text-[#fff] text-center pt-24 text-2xl font-semibold">
-        Name Event Selected
+      <h1 className="text-[#fff] pt-24 text-2xl font-semibold text-center">
+        My Cart
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">

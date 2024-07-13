@@ -38,6 +38,7 @@ export const WrapperIcon = styled.div`
 
   @media (min-width: 768px) {
     display: flex;
+    justify-content: flex-end;
     gap: 1.5rem;
   }
 `;

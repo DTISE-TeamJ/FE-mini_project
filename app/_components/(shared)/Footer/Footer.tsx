@@ -1,12 +1,11 @@
 import Link from "next/link";
 import React from "react";
-import { FaArrowRight } from "react-icons/fa6";
+import { FaArrowRight, FaXTwitter } from "react-icons/fa6";
 import {
   FaEnvelope,
   FaFacebookF,
-  FaTwitter,
   FaYoutube,
-  FaWhatsapp,
+  FaInstagram,
 } from "react-icons/fa";
 import {
   FooterContainer,
@@ -22,6 +21,9 @@ import {
   Divider,
   Copyright,
 } from "./style";
+// import LogoImg from "@/assets/scuderia-alpha-tauri.svg";
+// import LogoImg2 from "@/assets/voila2.png";
+import Image from "next/image";
 
 const Footer: React.FC = () => {
   const date = new Date();
@@ -31,7 +33,12 @@ const Footer: React.FC = () => {
     <FooterContainer>
       <Row>
         <Column>
-          <Logo src="" alt="test img" />
+          <h1 className="text-2xl font-bold text-white mb-4">PEACHES.</h1>
+          {/* <Image
+            src={LogoImg2}
+            alt="test-img"
+            className="top-[-100px] h-[-100px] w-[-100px] relative"
+          /> */}
           <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, quos.
             Iure, velit? Harum commodi impedit itaque, iure adipisci odio
@@ -92,10 +99,18 @@ const Footer: React.FC = () => {
             </Link>
           </Form>
           <SocialIcons>
-            <FaFacebookF className="fab fa-facebook" />
-            <FaTwitter className="fab fa-twitter" />
-            <FaYoutube className="fab fa-youtube" />
-            <FaWhatsapp className="fab fa-whatsapp" />
+            <Link href="https://www.facebook.com/" target="_blank">
+              <FaFacebookF className="fab fa-facebook" />
+            </Link>
+            <Link href="https://x.com/" target="_blank">
+              <FaXTwitter className="fab fa-twitter" />
+            </Link>
+            <Link href="https://www.youtube.com/" target="_blank">
+              <FaYoutube className="fab fa-youtube" />
+            </Link>
+            <Link href="https://www.instagram.com/" target="_blank">
+              <FaInstagram className="fab fa-instagram" />
+            </Link>
           </SocialIcons>
         </Column>
       </Row>

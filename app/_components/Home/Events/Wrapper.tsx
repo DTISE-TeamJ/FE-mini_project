@@ -1,16 +1,19 @@
-import React, { ReactNode } from 'react'
+import React from "react";
 
-const Wrapper = ({ children }: {children: ReactNode }) => {
-  return (
-    <>
-    <div className='px-4 mx-auto my-6
-    sm:px-6
-    lg:px-12
-    xl:max-w-[1400px] xl:px-18'>
-        {children}
-    </div>
-    </>
-  )
+interface WrapperProps {
+  children: React.ReactNode;
 }
 
-export default Wrapper
+const Wrapper: React.FC<WrapperProps> = ({ children }) => {
+  return (
+    <div
+      className="px-4 mx-auto my-6
+    sm:px-6
+    lg:px-12
+    xl:max-w-[1400px] xl:px-18">
+      {children}
+    </div>
+  );
+};
+
+export default Wrapper;

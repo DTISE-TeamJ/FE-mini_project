@@ -9,8 +9,9 @@ import { FaCalendarAlt, FaClock } from "react-icons/fa";
 import { RiUserStarFill } from "react-icons/ri";
 import moment from "moment";
 import BrokenImage from "@/assets/broken-image.png";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import slugify from "slugify";
 
 interface EventDetailProps {
   params: {
@@ -31,6 +32,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
   >([]);
   const id = parseInt(params.id, 10);
   const dispatch = useAppDispatch();
+  const pathname = usePathname();
 
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -38,6 +40,8 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
   const eventDetail = useAppSelector((state: RootState) =>
     state?.eventStore?.events?.find((event) => event?.id === id)
   );
+
+  const testDetail = eventDetail?.name;
 
   const loading = useAppSelector(
     (state: RootState) => state?.eventStore?.loading
@@ -64,7 +68,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
     }
   }, [dispatch, id, router, session]);
 
-  console.log(window.location.origin);
+  // console.log(window.location.origin);
 
   const formatPrice = (price: number | undefined) => {
     if (!price) return "";
@@ -76,6 +80,17 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
 
   if (error) {
     return <p>{error}</p>;
+  }
+
+  if (!eventDetail) {
+    return <p>Event not found</p>;
+  }
+
+  const eventSlug = slugify(eventDetail.name, { lower: true });
+
+  const expectedPath = `/event-detail/${id}/${eventSlug}`;
+  if (pathname !== expectedPath) {
+    router.replace(expectedPath);
   }
 
   const handleTicketSelection = (
@@ -328,6 +343,23 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
                 </div>
               )}
 
+              {/* <div className="flex justify-around gap-4 mt-4">
+                <button
+                  type="button"
+                  className={`p-2 bg-green-700 w-full rounded-lg text-[#fff] hover:bg-green-600 ${
+                    isOrderDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  } ${loading ? "bg-gray-300 animate-pulse h-12 rounded" : ""}`}
+                  onClick={handleOrderNow}
+                  disabled={isOrderDisabled}>
+                  {loading ? "Loading..." : "Order Now"}
+                </button>
+                <button
+                  type="button"
+                  className="p-2 bg-red-700 w-full rounded-lg text-[#fff] hover:bg-red-600">
+                  Add Another Event
+                </button>
+              </div> */}
+
               <button
                 type="button"
                 className={`p-2 bg-green-700 w-full rounded-lg text-[#fff] hover:bg-green-600 ${
@@ -335,7 +367,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
                 } ${loading ? "bg-gray-300 animate-pulse h-12 rounded" : ""}`}
                 onClick={handleOrderNow}
                 disabled={isOrderDisabled}>
-                {loading ? "Loading..." : "Order Now"}
+                {loading ? "Loading..." : "Add To Cart"}
               </button>
             </div>
           </div>

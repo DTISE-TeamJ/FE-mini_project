@@ -1,7 +1,32 @@
-import React from "react";
-import { AiOutlineSearch } from "react-icons/ai";
+"use client";
 
-const Hero: React.FC = () => {
+import { useAppDispatch } from "@/store";
+import { fetchEvents, searchEvents } from "@/store/action/event-slice";
+import React, { useEffect, useState } from "react";
+import { AiOutlineSearch } from "react-icons/ai";
+import { useDebounce } from "use-debounce";
+
+interface SearchProps {
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Hero: React.FC<SearchProps> = ({ searchTerm, setSearchTerm }) => {
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const dispatch = useAppDispatch();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      dispatch(searchEvents(debouncedSearchTerm));
+    } else {
+      dispatch(fetchEvents());
+    }
+  }, [debouncedSearchTerm, dispatch]);
+
   return (
     <div className="w-full h-screen relative">
       <video
@@ -24,6 +49,8 @@ const Hero: React.FC = () => {
               className="bg-transparent w-[300px] sm:w-[400px] font-[Poppins] focus:outline-none"
               type="text"
               placeholder="Search Destinations"
+              value={searchTerm}
+              onChange={handleSearchChange}
             />
           </div>
           <div>
