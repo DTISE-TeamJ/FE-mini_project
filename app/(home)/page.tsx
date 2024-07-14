@@ -32,8 +32,8 @@ const Home: React.FC = () => {
       <EventCategory searchTerm={searchTerm} />
       <EventLocation />
       <EventCta />
-      <Organizer />
-      <PromoCta />
+      {/* <Organizer />
+      <PromoCta /> */}
     </ReduxProvider>
   );
 };
