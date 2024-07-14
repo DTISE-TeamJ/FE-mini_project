@@ -1,47 +1,30 @@
 "use client";
 
 import { RootState, useAppDispatch, useAppSelector } from "@/store";
-import { fetchEvents } from "@/store/action/event-slice";
+import { fetchEvents, searchEvents } from "@/store/action/event-slice";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
 import EventCard from "@/app/_components/Home/Events/EventCard";
 
 const SearchEvents: React.FC = () => {
-  // const products = [
-  //   { id: 1, name: "Product A", category: "Category 1", price: 30 },
-  //   { id: 2, name: "Product B", category: "Category 2", price: 20 },
-  //   { id: 3, name: "Product C", category: "Category 1", price: 50 },
-  //   { id: 4, name: "Product D", category: "Category 2", price: 40 },
-  // ];
-
-  // const [search, setSearch] = useState("");
-  // const [sort, setSort] = useState("");
-  // const [filter, setFilter] = useState("");
-
-  // const handleSearch = (e: any) => setSearch(e.target.value);
-  // const handleSort = (e: any) => setSort(e.target.value);
-  // const handleFilter = (e: any) => setFilter(e.target.value);
-
-  // const filteredProducts = products
-  //   .filter((product) =>
-  //     product.name.toLowerCase().includes(search.toLowerCase())
-  //   )
-  //   .filter((product) => (filter ? product.category === filter : true))
-  //   .sort((a, b) => {
-  //     if (sort === "price-asc") return a.price - b.price;
-  //     if (sort === "price-desc") return b.price - a.price;
-  //     return 0;
-  //   });
-
   const dispatch = useAppDispatch();
 
-  const { events, loading, error } = useAppSelector(
+  const { result, loading, error } = useAppSelector(
     (state: RootState) => state.eventStore
   );
 
+  // const data = useAppSelector((state: RootState) => state.eventStore.result);
+  // console.log(data, "<==");
+
+  // console.log(result?.content, "<== search result");
+
+  const data = result;
+  // console.log(data, "<== data result");
+
   useEffect(() => {
     dispatch(fetchEvents());
+    // dispatch(searchEvents())
   }, []);
 
   return (
@@ -81,7 +64,7 @@ const SearchEvents: React.FC = () => {
               ? [...Array(12)].map((_, index) => (
                   <CardEventSkeleton key={index} />
                 ))
-              : events.map((event: any) => (
+              : data?.map((event: any) => (
                   <EventCard key={event.id} event={event} />
                 ))}
           </div>
