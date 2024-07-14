@@ -1,7 +1,11 @@
 "use client";
 
 import { RootState, useAppDispatch, useAppSelector } from "@/store";
-import { fetchEvents, searchEvents } from "@/store/action/event-slice";
+import {
+  fetchEvents,
+  fetchEventsPage,
+  searchEvents,
+} from "@/store/action/event-slice";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
@@ -24,6 +28,7 @@ const SearchEvents: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchEvents());
+    // dispatch(fetchEventsPage(1));
     // dispatch(searchEvents())
   }, []);
 

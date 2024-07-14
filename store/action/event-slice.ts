@@ -59,8 +59,21 @@ const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
     }
   );
 
+  // console.log(data.data, "<==");
   return data.data;
 });
+
+const fetchEventsPage = createAsyncThunk(
+  "events/fetchEvents",
+  async (page: number) => {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events?page=${page}&size=${initialState.size}`
+    );
+
+    // console.log(response.data, "<==");
+    return response.data;
+  }
+);
 
 const searchEvents = createAsyncThunk(
   "events/searchEvents",
@@ -222,6 +235,13 @@ const eventsSlice = createSlice({
   },
 });
 
-export { fetchEvents, searchEvents, fetchEventDetail, deleteEvent, editEvent };
+export {
+  fetchEvents,
+  fetchEventsPage,
+  searchEvents,
+  fetchEventDetail,
+  deleteEvent,
+  editEvent,
+};
 
 export default eventsSlice;
