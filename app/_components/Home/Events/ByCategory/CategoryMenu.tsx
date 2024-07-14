@@ -29,6 +29,7 @@ const CategoryMenu: React.FC = () => {
 
   const handleCategoryClick = (category: string) => {
     dispatch(changeCategory({ category, events }));
+    // dispatch(changeCategory({ category, result }));
   };
 
   return (
