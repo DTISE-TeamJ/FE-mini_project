@@ -65,7 +65,9 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   }
 
   return (
-    <div className="shadow-md rounded-b-2xl bg-white " onClick={handleDetail}>
+    <div
+      className="shadow-md rounded-b-2xl rounded-t-2xl bg-white "
+      onClick={handleDetail}>
       <div className="relative ">
         <Image
           src={event?.pic}
@@ -75,7 +77,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           height={300}
           className="rounded-t-[10px] w-full h-full cursor-pointer"
         />
-        <div className="absolute bg-white/50 p-2 rounded-s-full text-xs text-[#353535] right-[-2%] bottom-[0%] cursor-pointer">
+        <div className="absolute bg-white/50 p-2 rounded-s-full text-xs text-[#353535] right-[-0%] bottom-[0%] cursor-pointer">
           {event?.eventCategory?.name}
         </div>
       </div>

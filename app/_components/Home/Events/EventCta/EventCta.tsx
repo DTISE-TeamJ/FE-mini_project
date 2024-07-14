@@ -1,7 +1,14 @@
 import React from "react";
 import Wrapper from "../Wrapper";
+import { useRouter } from "next/navigation";
 
 const EventCta = () => {
+  const router = useRouter();
+
+  const handleSearchEvents = () => {
+    router.push("/search-events");
+  };
+
   return (
     <div className="bg-white py-6">
       <Wrapper>
@@ -13,7 +20,9 @@ const EventCta = () => {
             <p className="text-gray-600 mb-4">
               Find your next wave of excitement with WaveFest events!
             </p>
-            <button className="bg-cyan-500 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-blue-600  transition duration-300">
+            <button
+              onClick={handleSearchEvents}
+              className="bg-cyan-500 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-blue-600  transition duration-300">
               Explore More Events
             </button>
           </div>
