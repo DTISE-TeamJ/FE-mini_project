@@ -63,6 +63,19 @@ const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
   return data.data;
 });
 
+const fetchMetadata = createAsyncThunk("events/metadata", async () => {
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/metadata`,
+
+    {
+      // withCredentials: true,
+    }
+  );
+
+  // console.log(data.data, "<==");
+  return data.data;
+});
+
 const fetchEventsPage = createAsyncThunk(
   "events/fetchEvents",
   async (page: number) => {
@@ -94,7 +107,7 @@ const fetchEventDetail = createAsyncThunk(
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/${id}`,
       {
-        withCredentials: true,
+        // withCredentials: true,
       }
     );
 

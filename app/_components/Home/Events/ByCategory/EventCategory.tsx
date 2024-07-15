@@ -23,6 +23,8 @@ const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
 
   useEffect(() => {
     dispatch(fetchEvents());
+    //
+    // dispatch metadata untuk pagination
     // dispatch(fetchEventsPage(1));
   }, []);
 

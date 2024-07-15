@@ -18,7 +18,7 @@ const CategoryMenu: React.FC = () => {
   const events = result || [];
 
   const getCategory = result?.map((event: any) => event?.eventCategory?.name);
-  console.log(getCategory, "<===");
+  // console.log(getCategory, "<===");
 
   const uniqueCategories = [...new Set(getCategory)];
 

@@ -1,15 +1,16 @@
 import React from "react";
 import ReduxProvider from "@/store/redux-provider";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Find Events",
-  description: "Find Events",
-};
+import type { Metadata } from "next";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
+
+export const metadata: Metadata = {
+  title: "Cart",
+  description: "Cart",
+};
+
 const layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div>

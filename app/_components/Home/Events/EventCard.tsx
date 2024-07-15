@@ -37,7 +37,8 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const router = useRouter();
 
   const handleDetail = () => {
-    router.push(`/event-detail/${event?.id}/${event?.name}`);
+    // router.push(`/event-detail/${event?.id}/${event?.name}`);
+    router.push(`/event-detail/${event?.id}`);
   };
 
   const pricing = event?.ticketTypes?.map((ticket) => ticket?.price);
