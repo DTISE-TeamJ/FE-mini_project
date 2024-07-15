@@ -22,16 +22,45 @@ interface EditEventPayload {
   updatedEvent: Partial<Event>;
 }
 
+interface Metadata {
+  categories: string[];
+  locations: string[];
+}
+
 interface EventsState {
   events: Event[];
   loading: boolean;
   error: string | null;
+<<<<<<< Updated upstream
+=======
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+  metadata: Metadata;
+>>>>>>> Stashed changes
 }
 
 const initialState: EventsState = {
   events: [],
   loading: false,
   error: null,
+<<<<<<< Updated upstream
+=======
+  totalElements: 0,
+  totalPages: 0,
+  size: 10,
+  number: 0,
+  numberOfElements: 0,
+  first: true,
+  last: false,
+  empty: false,
+  metadata: {categories: [], locations: []}
+>>>>>>> Stashed changes
 };
 
 const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
@@ -45,6 +74,28 @@ const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
   return data.data;
 });
 
+<<<<<<< Updated upstream
+=======
+const fetchEventsPage = createAsyncThunk(
+  "events/fetchEvents",
+  async (page: number) => {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events?page=${page}&size=${initialState.size}`
+    );
+
+    // console.log(response.data, "<==");
+    return response.data;
+  }
+);
+
+const fetchMetadata = createAsyncThunk("events/fetchMetadata", async () => {
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/metadata`
+  );
+  return data.data;
+});
+
+>>>>>>> Stashed changes
 const searchEvents = createAsyncThunk(
   "events/searchEvents",
   async (searchTerm: string) => {
@@ -188,10 +239,25 @@ const eventsSlice = createSlice({
       .addCase(editEvent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to edit event";
+      })
+      .addCase(fetchMetadata.fulfilled, (state, action: PayloadAction<Metadata>) => {
+        state.metadata = action.payload;
       });
   },
 });
 
+<<<<<<< Updated upstream
 export { fetchEvents, searchEvents, fetchEventDetail, deleteEvent, editEvent };
+=======
+export {
+  fetchEvents,
+  fetchMetadata,
+  fetchEventsPage,
+  searchEvents,
+  fetchEventDetail,
+  deleteEvent,
+  editEvent,
+};
+>>>>>>> Stashed changes
 
 export default eventsSlice;

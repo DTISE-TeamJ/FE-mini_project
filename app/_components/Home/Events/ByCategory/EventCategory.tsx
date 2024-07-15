@@ -1,13 +1,15 @@
-// "use client";
-
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import CategoryMenu from "./CategoryMenu";
 import Wrapper from "../Wrapper";
 import EventCard from "../EventCard";
 import { RootState, useAppDispatch, useAppSelector } from "@/store";
 import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
 import { selectActiveCategory } from "@/store/action/category-slice";
+<<<<<<< Updated upstream
 import { fetchEvents } from "@/store/action/event-slice";
+=======
+import { fetchEvents, fetchMetadata } from "@/store/action/event-slice";
+>>>>>>> Stashed changes
 
 interface EventCategoryProps {
   searchTerm: string;
@@ -22,7 +24,21 @@ const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
 
   useEffect(() => {
     dispatch(fetchEvents());
+<<<<<<< Updated upstream
   }, [dispatch]);
+=======
+    dispatch(fetchMetadata());
+  }, [dispatch]);
+
+  const filteredEvents = useMemo(() => {
+    return result.filter(
+      (event) =>
+        event.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (activeCategory === "All" ||
+          event.eventCategory?.name === activeCategory)
+    );
+  }, [result, searchTerm, activeCategory]);
+>>>>>>> Stashed changes
 
   if (loading) {
     return (
@@ -36,6 +52,7 @@ const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
     );
   }
 
+<<<<<<< Updated upstream
   const filteredEvents = Array.isArray(events)
     ? events.filter(
         (event) =>
@@ -45,6 +62,8 @@ const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
       )
     : [];
 
+=======
+>>>>>>> Stashed changes
   return (
     <Wrapper>
       <div className="py-2 text-3xl font-semibold">
@@ -69,6 +88,7 @@ const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
   );
 };
 
+<<<<<<< Updated upstream
 export default EventCategory;
 
 /*
@@ -234,3 +254,6 @@ const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
 
 export default EventCategory;
 */
+=======
+export default EventCategory;
+>>>>>>> Stashed changes
