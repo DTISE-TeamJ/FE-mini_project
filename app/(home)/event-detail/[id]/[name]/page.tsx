@@ -38,7 +38,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
   const router = useRouter();
 
   const eventDetail = useAppSelector((state: RootState) =>
-    state?.eventStore?.events?.find((event) => event?.id === id)
+    state?.eventStore?.result?.find((event) => event?.id === id)
   );
 
   const testDetail = eventDetail?.name;

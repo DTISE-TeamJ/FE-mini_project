@@ -1,169 +1,92 @@
-import React, { useEffect, useMemo } from "react";
-import CategoryMenu from "./CategoryMenu";
-import Wrapper from "../Wrapper";
-import EventCard from "../EventCard";
-import { RootState, useAppDispatch, useAppSelector } from "@/store";
-import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
-import { selectActiveCategory } from "@/store/action/category-slice";
-<<<<<<< Updated upstream
-import { fetchEvents } from "@/store/action/event-slice";
-=======
-import { fetchEvents, fetchMetadata } from "@/store/action/event-slice";
->>>>>>> Stashed changes
+"use client";
 
-interface EventCategoryProps {
-  searchTerm: string;
-}
-
-const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
-  const dispatch = useAppDispatch();
-  const { events, loading, error } = useAppSelector(
-    (state: RootState) => state.eventStore
-  );
-  const activeCategory = useAppSelector(selectActiveCategory);
-
-  useEffect(() => {
-    dispatch(fetchEvents());
-<<<<<<< Updated upstream
-  }, [dispatch]);
-=======
-    dispatch(fetchMetadata());
-  }, [dispatch]);
-
-  const filteredEvents = useMemo(() => {
-    return result.filter(
-      (event) =>
-        event.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (activeCategory === "All" ||
-          event.eventCategory?.name === activeCategory)
-    );
-  }, [result, searchTerm, activeCategory]);
->>>>>>> Stashed changes
-
-  if (loading) {
-    return (
-      <div className="mx-4 my-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {[...Array(10)].map((_, index) => (
-            <CardEventSkeleton key={index} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-<<<<<<< Updated upstream
-  const filteredEvents = Array.isArray(events)
-    ? events.filter(
-        (event) =>
-          event.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          (activeCategory === "All" ||
-            event.eventCategory?.name === activeCategory)
-      )
-    : [];
-
-=======
->>>>>>> Stashed changes
-  return (
-    <Wrapper>
-      <div className="py-2 text-3xl font-semibold">
-        Dive into the waves by category
-      </div>
-      <CategoryMenu />
-
-      {filteredEvents.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {filteredEvents.map((event: any) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
-      ) : (
-        <div className="not found">
-          <h1 className="text-center text-2xl font-semibold mt-10">
-            Event not found
-          </h1>
-        </div>
-      )}
-    </Wrapper>
-  );
-};
-
-<<<<<<< Updated upstream
-export default EventCategory;
-
-/*
 import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { searchEventsByCategory } from "@/store/action/categoryEventSlice";
 import CategoryMenu from "./CategoryMenu";
 import Wrapper from "../Wrapper";
 import EventCard from "../EventCard";
-import { RootState, useAppDispatch, useAppSelector } from "@/store";
 import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
-import { selectActiveCategory } from "@/store/action/category-slice";
-import { fetchEvents } from "@/store/action/event-slice";
+import { Event } from "@/types/event";
 
-interface EventCategoryProps {
-  searchTerm: string;
-}
-
-const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
+const EventCategory: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { events, loading, error } = useAppSelector(
-    (state: RootState) => state.eventStore
-  );
-  const activeCategory = useAppSelector(selectActiveCategory);
+  const { events, loading, error, currentPage, totalPages, pageSize } =
+    useAppSelector((state) => state.categoryEvents);
+  const activeCategory = useAppSelector((state) => state.events.activeCategory);
 
   useEffect(() => {
-    dispatch(fetchEvents());
-  }, [dispatch]);
-
-  if (loading) {
-    return (
-      <div className="mx-4 my-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {[...Array(10)].map((_, index) => (
-            <CardEventSkeleton key={index} />
-          ))}
-        </div>
-      </div>
+    dispatch(
+      searchEventsByCategory({
+        category: activeCategory,
+        page: currentPage,
+        size: pageSize,
+      })
     );
-  }
+  }, [dispatch, activeCategory, currentPage, pageSize]);
 
-  const filteredEvents = Array.isArray(events)
-    ? events
-        .filter((event) => {
-          const lowerCaseSearch = searchTerm.toLowerCase();
-          return (
-            event.name.toLowerCase().includes(lowerCaseSearch) ||
-            event.location.toLowerCase().includes(lowerCaseSearch) ||
-            event.description.toLowerCase().includes(lowerCaseSearch) ||
-            event.organization.toLowerCase().includes(lowerCaseSearch)
-          );
-        })
-        .filter(
-          (event) =>
-            activeCategory === "All" ||
-            event.eventCategory?.name === activeCategory
-        )
-    : [];
+  const handleCategoryChange = (category: string) => {
+    dispatch({ type: "events/setActiveCategory", payload: category });
+    dispatch(searchEventsByCategory({ category, page: 0, size: pageSize }));
+  };
+
+  const handlePageChange = (newPage: number) => {
+    dispatch(
+      searchEventsByCategory({
+        category: activeCategory,
+        page: newPage,
+        size: pageSize,
+      })
+    );
+  };
 
   return (
     <Wrapper>
       <div className="py-2 text-3xl font-semibold">
         Dive into the waves by category
       </div>
-      <CategoryMenu />
+      <CategoryMenu
+        activeCategory={activeCategory}
+        onCategoryChange={handleCategoryChange}
+      />
 
-      {filteredEvents.length > 0 ? (
+      {loading === "pending" ? (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {filteredEvents.map((event: any) => (
+          {[...Array(10)].map((_, index) => (
+            <CardEventSkeleton key={index} />
+          ))}
+        </div>
+      ) : events.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {events.map((event: Event) => (
             <EventCard key={event.id} event={event} />
           ))}
         </div>
       ) : (
         <div className="not found">
           <h1 className="text-center text-2xl font-semibold mt-10">
-            Event not found
+            No events within this category are available at the moment
           </h1>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center mt-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 0}
+            className="mx-1 px-3 py-1 border rounded-full bg-white disabled:opacity-50"
+          >
+            -
+          </button>
+          <span className="mx-2 font-semibold">{currentPage + 1}</span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages - 1}
+            className="mx-1 px-3 py-1 border rounded-full bg-white disabled:opacity-50"
+          >
+            +
+          </button>
         </div>
       )}
     </Wrapper>
@@ -171,89 +94,3 @@ const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
 };
 
 export default EventCategory;
-*/
-
-/*
-import React, { useEffect } from "react";
-import CategoryMenu from "./CategoryMenu";
-import Wrapper from "../Wrapper";
-import EventCard from "../EventCard";
-import { RootState, useAppDispatch, useAppSelector } from "@/store";
-import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
-import { selectActiveCategory } from "@/store/action/category-slice";
-import { fetchEvents } from "@/store/action/event-slice";
-
-interface EventCategoryProps {
-  searchTerm: string;
-}
-
-const EventCategory: React.FC<EventCategoryProps> = ({ searchTerm }) => {
-  const dispatch = useAppDispatch();
-  const { events, loading, error } = useAppSelector(
-    (state: RootState) => state.eventStore
-  );
-  const activeCategory = useAppSelector(selectActiveCategory);
-
-  useEffect(() => {
-    dispatch(fetchEvents());
-  }, [dispatch]);
-
-  if (loading) {
-    return (
-      <div className="mx-4 my-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {[...Array(10)].map((_, index) => (
-            <CardEventSkeleton key={index} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  const filteredEvents = Array.isArray(events)
-    ? events
-        .filter((event) => {
-          const lowerCaseSearch = searchTerm.toLowerCase();
-          return (
-            event.name.toLowerCase().includes(lowerCaseSearch) ||
-            event.location.toLowerCase().includes(lowerCaseSearch) ||
-            event.description.toLowerCase().includes(lowerCaseSearch) ||
-            event.organization.toLowerCase().includes(lowerCaseSearch)
-          );
-        })
-        .filter(
-          (event) =>
-            activeCategory === "All" ||
-            event.eventCategory?.name === activeCategory
-        )
-    : [];
-
-  return (
-    <Wrapper>
-      <div className="py-2 text-3xl font-semibold">
-        Dive into the waves by category
-      </div>
-      <CategoryMenu />
-
-      {filteredEvents.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {filteredEvents.map((event: any) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
-      ) : (
-        <div className="not found">
-          <h1 className="text-center text-2xl font-semibold mt-10">
-            Event not found
-          </h1>
-        </div>
-      )}
-    </Wrapper>
-  );
-};
-
-export default EventCategory;
-*/
-=======
-export default EventCategory;
->>>>>>> Stashed changes

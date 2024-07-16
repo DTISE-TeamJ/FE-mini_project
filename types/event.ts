@@ -1,21 +1,9 @@
-import { User } from "./user";
-
-export interface Event {
+export interface TicketType {
   id: number;
   name: string;
-  date: string;
-  start: string;
-  end: string;
-  pic: string; //link from cloudinary
-  organization: string;
-  location: string;
-  description: string;
-  isFree: boolean;
-  category: EventCategory;
-  user: User;
-  ticketTypes: TicketType[];
-  lowestTicketPrice: number; //to be calculated in the backend
-  highestTicketPrice: number; //to be calculated in the backend
+  price: number;
+  quantity: number;
+  eventId: number;
 }
 
 export interface EventCategory {
@@ -23,10 +11,55 @@ export interface EventCategory {
   name: string;
 }
 
-export interface TicketType {
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+}
+
+export interface Promo {
+  name: string;
+  promoType: string;
+  promoTypeDisplayName: string;
+  discount: number;
+  quantity: number;
+  promoCode: string;
+  startValid: string;
+  endValid: string;
+}
+
+export interface Event {
   id: number;
   name: string;
-  price: number;
-  quantity: number;
-  eventId: number;
+  start: string;
+  end: string;
+  pic: string;
+  organization: string;
+  location: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+  eventCategory: EventCategory;
+  user: User;
+  ticketTypes: TicketType[];
+  promos: Promo[];
+}
+
+export interface SearchEventsParams {
+  keyword?: string;
+  categoryName?: string;
+  location?: string;
+  startDate?: string;
+  endDate?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  page?: number;
+  size?: number;
+  sort?: string;
+}
+
+export interface FetchEventsParams {
+  page?: number;
+  size?: number;
 }

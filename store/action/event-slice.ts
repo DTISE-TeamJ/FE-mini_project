@@ -1,6 +1,11 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
+interface EditEventPayload {
+  id: number;
+  updatedEvent: Partial<Event>;
+}
+
 interface Event {
   id: number;
   name: string;
@@ -12,27 +17,15 @@ interface Event {
   end: string;
   pic: string;
   eventCategory: { id: number; name: string };
-  user: [];
-  ticketTypes: [];
-  promos: [];
-}
-
-interface EditEventPayload {
-  id: number;
-  updatedEvent: Partial<Event>;
-}
-
-interface Metadata {
-  categories: string[];
-  locations: string[];
+  user: any[];
+  ticketTypes: any[];
+  promos: any[];
 }
 
 interface EventsState {
-  events: Event[];
+  result: any;
   loading: boolean;
   error: string | null;
-<<<<<<< Updated upstream
-=======
   totalElements: number;
   totalPages: number;
   size: number;
@@ -41,16 +34,12 @@ interface EventsState {
   first: boolean;
   last: boolean;
   empty: boolean;
-  metadata: Metadata;
->>>>>>> Stashed changes
 }
 
 const initialState: EventsState = {
-  events: [],
+  result: [],
   loading: false,
   error: null,
-<<<<<<< Updated upstream
-=======
   totalElements: 0,
   totalPages: 0,
   size: 10,
@@ -59,23 +48,34 @@ const initialState: EventsState = {
   first: true,
   last: false,
   empty: false,
-  metadata: {categories: [], locations: []}
->>>>>>> Stashed changes
 };
 
 const fetchEvents = createAsyncThunk("events/fetchEvents", async () => {
   const { data } = await axios.get(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events`,
+
     {
       // withCredentials: true,
     }
   );
 
+  // console.log(data.data, "<==");
   return data.data;
 });
 
-<<<<<<< Updated upstream
-=======
+const fetchMetadata = createAsyncThunk("events/metadata", async () => {
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/metadata`,
+
+    {
+      // withCredentials: true,
+    }
+  );
+
+  // console.log(data.data, "<==");
+  return data.data;
+});
+
 const fetchEventsPage = createAsyncThunk(
   "events/fetchEvents",
   async (page: number) => {
@@ -88,14 +88,6 @@ const fetchEventsPage = createAsyncThunk(
   }
 );
 
-const fetchMetadata = createAsyncThunk("events/fetchMetadata", async () => {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/metadata`
-  );
-  return data.data;
-});
-
->>>>>>> Stashed changes
 const searchEvents = createAsyncThunk(
   "events/searchEvents",
   async (searchTerm: string) => {
@@ -103,10 +95,9 @@ const searchEvents = createAsyncThunk(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/search`,
       {
         params: { q: searchTerm },
-        // withCredentials: true,
       }
     );
-    return data.data;
+    return data.data.event;
   }
 );
 
@@ -116,7 +107,7 @@ const fetchEventDetail = createAsyncThunk(
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/${id}`,
       {
-        withCredentials: true,
+        // withCredentials: true,
       }
     );
 
@@ -161,13 +152,27 @@ const eventsSlice = createSlice({
       .addCase(fetchEvents.pending, (state) => {
         state.loading = true;
       })
-      .addCase(
-        fetchEvents.fulfilled,
-        (state, action: PayloadAction<Event[]>) => {
-          state.events = action.payload;
-          state.loading = false;
-        }
-      )
+      // .addCase(
+      //   fetchEvents.fulfilled,
+      //   (state, action: PayloadAction<Event[]>) => {
+      //     state.result = action.payload;
+      //     state.loading = false;
+      //   }
+      // )
+
+      .addCase(fetchEvents.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = null;
+        state.result = action.payload.content;
+        state.totalElements = action.payload.totalElements;
+        state.totalPages = action.payload.totalPages;
+        state.size = action.payload.size;
+        state.number = action.payload.number;
+        state.numberOfElements = action.payload.numberOfElements;
+        state.first = action.payload.first;
+        state.last = action.payload.last;
+        state.empty = action.payload.empty;
+      })
       .addCase(fetchEvents.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch events";
@@ -178,7 +183,7 @@ const eventsSlice = createSlice({
       .addCase(
         searchEvents.fulfilled,
         (state, action: PayloadAction<Event[]>) => {
-          state.events = action.payload;
+          state.result = action.payload;
           state.loading = false;
         }
       )
@@ -193,11 +198,11 @@ const eventsSlice = createSlice({
         fetchEventDetail.fulfilled,
         (state, action: PayloadAction<Event>) => {
           const event = action.payload;
-          const index = state.events.findIndex((e) => e.id === event.id);
+          const index = state.result.findIndex((e: any) => e.id === event.id);
           if (index !== -1) {
-            state.events[index] = event;
+            state.result[index] = event;
           } else {
-            state.events.push(event);
+            state.result.push(event);
           }
           state.loading = false;
         }
@@ -212,8 +217,8 @@ const eventsSlice = createSlice({
       .addCase(
         deleteEvent.fulfilled,
         (state, action: PayloadAction<number>) => {
-          state.events = state.events.filter(
-            (event) => event.id !== action.payload
+          state.result = state.result.filter(
+            (event: any) => event.id !== action.payload
           );
         }
       )
@@ -228,36 +233,28 @@ const eventsSlice = createSlice({
       .addCase(editEvent.fulfilled, (state, action: PayloadAction<Event>) => {
         // Update the corresponding event in the state with the edited data
         const updatedEvent = action.payload;
-        const index = state.events.findIndex(
-          (event) => event.id === updatedEvent.id
+        const index = state.result.findIndex(
+          (event: any) => event.id === updatedEvent.id
         );
         if (index !== -1) {
-          state.events[index] = updatedEvent;
+          state.result[index] = updatedEvent;
         }
         state.loading = false;
       })
       .addCase(editEvent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to edit event";
-      })
-      .addCase(fetchMetadata.fulfilled, (state, action: PayloadAction<Metadata>) => {
-        state.metadata = action.payload;
       });
   },
 });
 
-<<<<<<< Updated upstream
-export { fetchEvents, searchEvents, fetchEventDetail, deleteEvent, editEvent };
-=======
 export {
   fetchEvents,
-  fetchMetadata,
   fetchEventsPage,
   searchEvents,
   fetchEventDetail,
   deleteEvent,
   editEvent,
 };
->>>>>>> Stashed changes
 
 export default eventsSlice;
