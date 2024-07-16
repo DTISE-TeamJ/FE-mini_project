@@ -9,4 +9,5 @@
 interface OrderData {
   userId: any;
   ticketRequests: any[];
+  promoCode: any;
 }

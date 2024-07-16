@@ -88,14 +88,17 @@ const adjustQuantity = createAsyncThunk(
 );
 
 const calculatePrices = (orderItems: TicketRequest[]) => {
-  const totalOriginalPrice = orderItems.reduce(
+  const totalOriginalPrice = orderItems?.reduce(
     (acc, item) => acc + item.originalPrice * item.quantity,
     0
   );
-  const finalPrice = orderItems.reduce(
+  const finalPrice = orderItems?.reduce(
     (acc, item) => acc + item.discountedPrice * item.quantity,
     0
   );
+
+  // console.log(finalPrice, "<===");
+
   return { totalOriginalPrice, finalPrice };
 };
 
@@ -105,7 +108,7 @@ const orderSlice = createSlice({
   reducers: {
     updateQuantity(state, action) {
       const { itemId, quantity } = action.payload;
-      const itemToUpdate = state.order?.orderItems.find(
+      const itemToUpdate = state.order?.orderItems?.find(
         (item: TicketRequest) => item.id === itemId
       );
       if (itemToUpdate) {
@@ -117,16 +120,31 @@ const orderSlice = createSlice({
         state.order.finalPrice = finalPrice;
       }
     },
+    // deleteItem(state, action) {
+    //   const itemId = action?.payload;
+    //   state.order.orderItems = state?.order?.orderItems?.filter(
+    //     (item: TicketRequest) => item?.id !== itemId
+    //   );
+    //   const { totalOriginalPrice, finalPrice } = calculatePrices(
+    //     state.order.orderItems
+    //   );
+    //   state.order.totalOriginalPrice = totalOriginalPrice;
+    //   state.order.finalPrice = finalPrice;
+    // },
+
     deleteItem(state, action) {
       const itemId = action.payload;
-      state.order.orderItems = state.order.orderItems.filter(
-        (item: TicketRequest) => item.id !== itemId
-      );
-      const { totalOriginalPrice, finalPrice } = calculatePrices(
-        state.order.orderItems
-      );
-      state.order.totalOriginalPrice = totalOriginalPrice;
-      state.order.finalPrice = finalPrice;
+      if (state.order && state.order.orderItems) {
+        state.order.orderItems = state.order.orderItems.filter(
+          (item: TicketRequest) => item.id !== itemId
+        );
+
+        const { totalOriginalPrice, finalPrice } = calculatePrices(
+          state.order.orderItems
+        );
+        state.order.totalOriginalPrice = totalOriginalPrice;
+        state.order.finalPrice = finalPrice;
+      }
     },
   },
   extraReducers: (builder) => {
