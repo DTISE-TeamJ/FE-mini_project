@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -20,9 +21,13 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionProvider>
-          <CategoryProvider>{children}</CategoryProvider>
-        </SessionProvider>
+        <ReduxProvider>
+          <SessionProvider>
+            <CategoryProvider>
+              {children}
+            </CategoryProvider>
+          </SessionProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

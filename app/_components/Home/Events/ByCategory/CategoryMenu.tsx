@@ -1,35 +1,26 @@
-import { RootState, useAppDispatch, useAppSelector } from "@/store";
-import {
-  changeCategory,
-  selectActiveCategory,
-} from "@/store/action/category-slice";
-import { fetchEvents } from "@/store/action/event-slice";
-import { useEffect } from "react";
+"use client";
 
-const CategoryMenu: React.FC = () => {
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from '@/store';
+import { fetchMetadata } from '@/store/action/metadataSlice';
+
+interface CategoryMenuProps {
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+}
+
+const CategoryMenu: React.FC<CategoryMenuProps> = ({ activeCategory, onCategoryChange }) => {
   const dispatch = useAppDispatch();
-  const activeCategory = useAppSelector(selectActiveCategory);
-  const { result } = useAppSelector((state: RootState) => state.eventStore);
+  const { data: metadata } = useAppSelector((state) => state.metadata);
 
-  // useEffect(() => {
-  //   dispatch(fetchEvents());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchMetadata());
+  }, [dispatch]);
 
-  const events = result || [];
-
-  const getCategory = result?.map((event: any) => event?.eventCategory?.name);
-  // console.log(getCategory, "<===");
-
-  const uniqueCategories = [...new Set(getCategory)];
-
-  const menuCategories: React.ReactNode[] | any[] = [
-    "All",
-    ...uniqueCategories,
-  ];
+  const menuCategories = ["All", ...(metadata?.categories || [])];
 
   const handleCategoryClick = (category: string) => {
-    dispatch(changeCategory({ category, events }));
-    // dispatch(changeCategory({ category, result }));
+    onCategoryChange(category);
   };
 
   return (
@@ -41,7 +32,8 @@ const CategoryMenu: React.FC = () => {
             className={`cursor-pointer inline-block px-4 py-2 ${
               activeCategory === item ? "border-b-2 border-black" : ""
             }`}
-            onClick={() => handleCategoryClick(item as string)}>
+            onClick={() => handleCategoryClick(item)}
+          >
             {item}
           </li>
         ))}

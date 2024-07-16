@@ -4,30 +4,7 @@ import { FaCalendar, FaClock, FaMapMarker } from "react-icons/fa";
 import { IoIosPricetags } from "react-icons/io";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-
-interface Event {
-  id: number;
-  name: string;
-  date: string;
-  location: string;
-  organization: string;
-  description: string;
-  start: string;
-  end: string;
-  pic: string;
-  eventCategory?: { id: number; name: string };
-  user: [];
-  ticketTypes?: [
-    {
-      eventId: number;
-      id: number;
-      name: string;
-      price: number;
-      quantity: number;
-    }
-  ];
-  promos: [];
-}
+import { Event } from "@/types/event";
 
 interface EventCardProps {
   event: Event;
@@ -37,7 +14,6 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const router = useRouter();
 
   const handleDetail = () => {
-    // router.push(`/event-detail/${event?.id}/${event?.name}`);
     router.push(`/event-detail/${event?.id}`);
   };
 
@@ -53,7 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     const formatter = new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
-      minimumFractionDigits: 0, // Adjust decimals as needed
+      minimumFractionDigits: 0,
     });
 
     const formattedLowestPrice = formatter.format(lowestPrice);
@@ -69,14 +45,14 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     <div
       className="shadow-md rounded-b-2xl rounded-t-2xl bg-white "
       onClick={handleDetail}>
-      <div className="relative ">
+      <div className="relative h-[150px] overflow-hidden rounded-t-[10px] ">
         <Image
           src={event?.pic}
           alt={`${event?.name}-image`}
           quality={100}
-          width={300}
-          height={300}
-          className="rounded-t-[10px] w-full h-full cursor-pointer"
+          width={500}
+          height={150}
+          className="w-full h-full object-cover object-center cursor-pointer"
         />
         <div className="absolute bg-white/50 p-2 rounded-s-full text-xs text-[#353535] right-[-0%] bottom-[0%] cursor-pointer">
           {event?.eventCategory?.name}

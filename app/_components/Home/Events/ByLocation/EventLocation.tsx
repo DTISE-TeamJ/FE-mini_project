@@ -1,47 +1,43 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { searchEventsByLocation } from "@/store/action/locationEventSlice";
 import LocationMenu from "./LocationMenu";
 import Wrapper from "../Wrapper";
 import EventCard from "../EventCard";
-import { RootState, useAppSelector } from "@/store";
 import CardEventSkeleton from "@/app/_components/Skeleton/CardEventSkeleton";
+import { Event } from "@/types/event";
 
 const EventLocation: React.FC = () => {
-  const { result, loading, error } = useAppSelector(
-    (state: RootState) => state.eventStore
-  );
+  const dispatch = useAppDispatch();
+  const { events, loading, error, currentPage, totalPages, pageSize } =
+    useAppSelector((state) => state.locationEvents);
+  const [selectedLocation, setSelectedLocation] = useState<string>("Jakarta");
 
-  const data = result;
-
-  const [selectedLocation, setSelectedLocation] = useState<string>(
-    "Select your location"
-  );
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
-  const setLocation: string[] = data?.map((event: any) => event.location) || [];
-  const uniqueLocations = [...new Set(setLocation)];
-
-  const filteredEvents =
-    selectedLocation === "Select your location"
-      ? data?.filter((event: any) =>
-          event.name.toLowerCase().includes(searchTerm.toLowerCase())
-        ) || []
-      : data?.filter(
-          (event: any) =>
-            event.location === selectedLocation &&
-            event.name.toLowerCase().includes(searchTerm.toLowerCase())
-        ) || [];
-
-  if (loading) {
-    return (
-      <div className="mx-4 my-2">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {[...Array(10)].map((_, index) => (
-            <CardEventSkeleton key={index} />
-          ))}
-        </div>
-      </div>
+  useEffect(() => {
+    dispatch(
+      searchEventsByLocation({
+        location: selectedLocation,
+        page: 0,
+        size: pageSize,
+      })
     );
-  }
+  }, [dispatch, selectedLocation, pageSize]);
+
+  const handleLocationChange = (newLocation: string) => {
+    setSelectedLocation(newLocation);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    dispatch(
+      searchEventsByLocation({
+        location: selectedLocation,
+        page: newPage,
+        size: pageSize,
+      })
+    );
+  };
 
   return (
     <Wrapper>
@@ -49,25 +45,49 @@ const EventLocation: React.FC = () => {
         Discover your wave's sweet spot
       </div>
       <LocationMenu
-        locations={uniqueLocations}
         selectedLocation={selectedLocation}
-        setSelectedLocation={setSelectedLocation}
-        setSearchTerm={setSearchTerm}
+        setSelectedLocation={handleLocationChange}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 cursor-pointer">
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event: any) => (
+      {loading === "pending" ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {[...Array(10)].map((_, index) => (
+            <CardEventSkeleton key={index} />
+          ))}
+        </div>
+      ) : events && events.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {events.map((event: Event) => (
             <EventCard key={event.id} event={event} />
-          ))
-        ) : (
-          <div className="not-found">
-            <h1 className="text-center text-2xl font-semibold mt-10">
-              No events found
-            </h1>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="not found">
+          <h1 className="text-center text-2xl font-semibold mt-10">
+            No events found for this location
+          </h1>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center mt-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 0}
+            className="mx-1 px-3 py-1 border rounded-full bg-white disabled:opacity-50"
+          >
+            -
+          </button>
+          <span className="mx-2 font-semibold">{currentPage + 1}</span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages - 1}
+            className="mx-1 px-3 py-1 border rounded-full bg-white disabled:opacity-50"
+          >
+            +
+          </button>
+        </div>
+      )}
     </Wrapper>
   );
 };
