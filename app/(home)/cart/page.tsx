@@ -1,3 +1,5 @@
+// ANJING BANG
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -7,11 +9,12 @@ import { styled } from "styled-components";
 import { RootState, useAppDispatch, useAppSelector } from "@/store";
 import { useSession } from "next-auth/react";
 import {
-  addOrderItem,
   deleteItem,
   getOrderItem,
   updateQuantity,
+  adjustQuantity,
 } from "@/store/action/order-slice";
+import { useRouter } from "next/navigation";
 
 interface SliderButtonProps {
   isActive: boolean;
@@ -40,24 +43,28 @@ const SliderButton = styled.div<SliderButtonProps>`
   transition: left 0.3s ease, background-color 0.3s ease;
 `;
 
-// interface PaymentProps {
-//   params: {
-//     id: string;
-//   };
-//   // id: number;
-// }
-
-const Payment: React.FC = () => {
+const CartPage: React.FC = () => {
   const [isDiscountActive, setIsDiscountActive] = useState(false);
   const [isPointActive, setIsPointActive] = useState(false);
   const dispatch = useAppDispatch();
-  const { data: session } = useSession();
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const { order } = useAppSelector((state: RootState) => state.orderItem);
   const [selectedTickets, setSelectedTickets] = useState(
     order?.orderItems || []
   );
 
-  console.log(order, "<===");
+  useEffect(() => {
+    if (status === "authenticated") {
+      if (session?.user?.role === "USER") {
+        dispatch(getOrderItem(order?.[0]?.userId));
+      } else {
+        router.push("/");
+      }
+    }
+  }, [status, session, dispatch, router]);
 
   const toggleDiscountSlider = () => {
     setIsDiscountActive((prev) => !prev);
@@ -75,18 +82,26 @@ const Payment: React.FC = () => {
     }).format(price);
   };
 
-  // const id = parseInt(params.id, 10);
+  // const handleIncreaseQuantity = (itemId: number) => {
+  //   dispatch(adjustQuantity({ itemId, quantity: 1 }));
+  // };
 
-  useEffect(() => {
-    // dispatch(getOrderItem(id));
-    dispatch(getOrderItem(order?.id));
-  }, []);
+  // const handleDecreaseQuantity = (itemId: number) => {
+  //   dispatch(adjustQuantity({ itemId, quantity: -1 }));
+  // };
+
+  // const handleDeleteItem = (itemId: number) => {
+  //   dispatch(deleteItem(itemId));
+  // };
 
   const handleIncreaseQuantity = (itemId: number) => {
     const updatedTickets = selectedTickets.map((item: any) =>
       item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
     );
     setSelectedTickets(updatedTickets);
+
+    // Make sure quantity is always a number
+    dispatch(updateQuantity({ id: itemId, quantity: 1 }));
   };
 
   const handleDecreaseQuantity = (itemId: number) => {
@@ -96,6 +111,9 @@ const Payment: React.FC = () => {
         : item
     );
     setSelectedTickets(updatedTickets);
+
+    // Make sure quantity is always a number
+    dispatch(updateQuantity({ id: itemId, quantity: -1 }));
   };
 
   const handleDeleteItem = (itemId: number) => {
@@ -103,6 +121,9 @@ const Payment: React.FC = () => {
       (item: any) => item.id !== itemId
     );
     setSelectedTickets(updatedTickets);
+
+    // itemId should be a number, not undefined
+    dispatch(deleteItem(itemId));
   };
 
   return (
@@ -248,9 +269,14 @@ const Payment: React.FC = () => {
 
             <button
               type="button"
-              className="p-2 bg-green-700 w-full rounded-full text-[#fff] hover:bg-green-600 font-semibold mt-4"
+              className={`p-2 w-full rounded-full text-[#fff] font-semibold mt-4 ${
+                selectedTickets.length === 0
+                  ? "bg-[#acacac]"
+                  : "bg-green-700 hover:bg-green-600"
+              }`}
+              disabled={selectedTickets.length === 0}
               // onClick={handleOrderNow}
-              disabled={selectedTickets.length === 0}>
+            >
               Proceed to payment
             </button>
           </div>
@@ -260,73 +286,67 @@ const Payment: React.FC = () => {
   );
 };
 
-export default Payment;
+export default CartPage;
 
 /*
-import React, { useEffect } from "react";
-import { RootState, useAppDispatch, useAppSelector } from "@/store";
-import { getOrderItem } from "@/store/action/order-slice";
-import { useRouter, usePathname } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+"use client";
 
-interface PaymentProps {
-  params: {
-    id: string;
-  };
+import React, { useEffect, useState } from "react";
+import { IoInformationCircleOutline } from "react-icons/io5";
+import { CiDiscount1 } from "react-icons/ci";
+import { styled } from "styled-components";
+import { RootState, useAppDispatch, useAppSelector } from "@/store";
+import { useSession } from "next-auth/react";
+import {
+  addOrderItem,
+  deleteItem,
+  getOrderItem,
+  updateQuantity,
+} from "@/store/action/order-slice";
+import { useRouter } from "next/navigation";
+
+interface SliderButtonProps {
+  isActive: boolean;
 }
 
-const Payment: React.FC<PaymentProps> = ({ params }) => {
-  const id = parseInt(params.id, 10);
-  const dispatch = useAppDispatch();
-  const { data: session, status } = useSession();
-  const router = useRouter();
+const SliderContainer = styled.div`
+  width: 60px;
+  height: 24px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+`;
 
-  const unpaidOrder = useAppSelector(
-    (state: RootState) => state.orderItem.order
-  );
+const SliderButton = styled.div<SliderButtonProps>`
+  width: 20px;
+  height: 20px;
+  background-color: ${(props) => (props.isActive ? "#16a34a" : "lightgray")};
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: ${(props) => (props.isActive ? "80%" : "20%")};
+  transform: translate(-50%, -50%);
+  transition: left 0.3s ease, background-color 0.3s ease;
+`;
 
-  const loading = useAppSelector((state: RootState) => state.orderItem.loading);
-  const error = useAppSelector((state: RootState) => state.orderItem.error);
-
-  useEffect(() => {
-    // dispatch(getOrderItem(unpaidOrder?.id));
-    dispatch(getOrderItem(id));
-  }, []);
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!unpaidOrder) {
-    return <p>Order not found</p>;
-  }
-
-  return (
-    <div className="bg-custom-gradient w-full h-full">
-      <div className="flex justify-center mx-4 md:mx-8 shadow-orange-500">
-        // Render unpaid order details here
-        <div>
-          <h1>Order Details</h1>
-          <p>Order ID: {unpaidOrder.id}</p>
-          <p>Total Price: {unpaidOrder.totalPrice}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-*/
-
-/*
-const Payment: React.FC<PaymentProps> = ({ id }) => {
+const CartPage: React.FC = () => {
   const [isDiscountActive, setIsDiscountActive] = useState(false);
   const [isPointActive, setIsPointActive] = useState(false);
   const dispatch = useAppDispatch();
-  const { data: session } = useSession();
-  const { order } = useAppSelector((state: RootState) => state.orderItem);
 
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const { order } = useAppSelector((state: RootState) => state.orderItem);
   const [selectedTickets, setSelectedTickets] = useState(
     order?.orderItems || []
   );
+
+  console.log(order?.orderItems, "<=== order");
+  // console.log(selectedTickets, "<=== selected ticket");
 
   const toggleDiscountSlider = () => {
     setIsDiscountActive((prev) => !prev);
@@ -344,39 +364,42 @@ const Payment: React.FC<PaymentProps> = ({ id }) => {
     }).format(price);
   };
 
-  // const getId = id;
-  // console.log(getId, "parsed id");
-
-  console.log(id, "<===");
-
   useEffect(() => {
-    // dispatch(getOrderItem(+getId));
-    dispatch(getOrderItem(id));
-  }, [dispatch, id]);
+    // dispatch(getOrderItem(order?.[0]?.userId));
+
+    if (status === "authenticated") {
+      if (session?.user?.role === "USER") {
+        dispatch(getOrderItem(order?.[0]?.userId));
+      } else {
+        router.push("/");
+      }
+    }
+  }, []);
 
   const handleIncreaseQuantity = (itemId: number) => {
-    const itemToUpdate = order.find((item: any) => item.id === itemId);
-    if (itemToUpdate) {
-      dispatch(updateQuantity({ itemId, quantity: itemToUpdate.quantity + 1 }));
-    }
+    const updatedTickets = selectedTickets.map((item: any) =>
+      item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setSelectedTickets(updatedTickets);
+    dispatch(updateQuantity({ id: itemId, quantity: 1 }));
   };
 
   const handleDecreaseQuantity = (itemId: number) => {
-    const itemToUpdate = order.find((item: any) => item.id === itemId);
-    if (itemToUpdate && itemToUpdate.quantity > 1) {
-      dispatch(updateQuantity({ itemId, quantity: itemToUpdate.quantity - 1 }));
-    }
+    const updatedTickets = selectedTickets.map((item: any) =>
+      item.id === itemId && item.quantity > 1
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    );
+    setSelectedTickets(updatedTickets);
+    dispatch(updateQuantity({ id: itemId, quantity: -1 }));
   };
 
   const handleDeleteItem = (itemId: number) => {
-    dispatch(deleteItem(itemId));
-  };
-
-  const calculateTotalPrice = () => {
-    return selectedTickets.reduce(
-      (acc: any, item: any) => acc + item.originalPrice * item.quantity,
-      0
+    const updatedTickets = selectedTickets.filter(
+      (item: any) => item.id !== itemId
     );
+    setSelectedTickets(updatedTickets);
+    dispatch(deleteItem(itemId));
   };
 
   return (
@@ -510,15 +533,26 @@ const Payment: React.FC<PaymentProps> = ({ id }) => {
             <div className="flex justify-between items-center my-4">
               <p className="text-[#fff] font-bold">Total :</p>
               <p className="text-[#fff] font-bold">
-                {formatPrice(calculateTotalPrice())}
+                {formatPrice(
+                  selectedTickets.reduce(
+                    (acc: any, item: any) =>
+                      acc + item.originalPrice * item.quantity,
+                    0
+                  )
+                )}
               </p>
             </div>
 
             <button
               type="button"
-              className="p-2 bg-green-700 w-full rounded-full text-[#fff] hover:bg-green-600 font-semibold mt-4"
+              className={`p-2 w-full rounded-full text-[#fff] font-semibold mt-4 ${
+                selectedTickets.length === 0
+                  ? "bg-[#acacac]"
+                  : "bg-green-700 hover:bg-green-600"
+              }`}
+              disabled={selectedTickets.length === 0}
               // onClick={handleOrderNow}
-              disabled={selectedTickets.length === 0}>
+            >
               Proceed to payment
             </button>
           </div>
@@ -527,4 +561,6 @@ const Payment: React.FC<PaymentProps> = ({ id }) => {
     </div>
   );
 };
+
+export default CartPage;
 */
