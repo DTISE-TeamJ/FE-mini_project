@@ -27,3 +27,6 @@ body {
   overflow: hidden;
 }
 
+/* auth.requestMatchers("/api/v1/orders/process-payment/**").hasRole("USER"); */
+/* auth.requestMatchers("/api/v1/orders/apply-promo/**").hasRole("USER"); */
+/* auth.requestMatchers("/api/v1/orders/remove-promo/**").hasRole("USER"); */

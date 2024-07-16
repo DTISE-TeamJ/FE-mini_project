@@ -61,7 +61,6 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
   };
 
   const handleEdit = () => {
-    // Handle edit logic here
     router.push(`/dashboard/edit-event/${event.id}`);
     closeModal();
   };
@@ -128,7 +127,6 @@ const CardEvent: React.FC<CardEventProps> = ({ event }) => {
 
         <div className="flex items-start align-middle gap-2 my-2">
           <FaMapMarker width={20} height={20} />
-          {/* <span className="text-gray-400">{event.location}</span> */}
           <span className="text-[#000]">{event.location}</span>
         </div>
 

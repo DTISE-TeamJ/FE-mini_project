@@ -1,8 +1,22 @@
+// ANJING BANG
+
 "use client";
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { CiDiscount1 } from "react-icons/ci";
 import { styled } from "styled-components";
+import { RootState, useAppDispatch, useAppSelector } from "@/store";
+// import { RootState, useAppDispatch, useAppSelector } from "store";
+import { signIn, useSession } from "next-auth/react";
+
+import {
+  deleteItem,
+  getOrderItem,
+  updateQuantity,
+  adjustQuantity,
+} from "store/action/order-slice";
+import { redirect, useRouter } from "next/navigation";
 
 interface SliderButtonProps {
   isActive: boolean;
@@ -31,9 +45,33 @@ const SliderButton = styled.div<SliderButtonProps>`
   transition: left 0.3s ease, background-color 0.3s ease;
 `;
 
-const Payment: React.FC = () => {
+const CartPage: React.FC = () => {
   const [isDiscountActive, setIsDiscountActive] = useState(false);
   const [isPointActive, setIsPointActive] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const { order } = useAppSelector((state: RootState) => state.orderItem);
+  const [selectedTickets, setSelectedTickets] = useState(
+    order?.orderItems || []
+  );
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      if (session?.user?.role === "USER") {
+        dispatch(getOrderItem(order?.[0]?.userId));
+      } else {
+        router.push("/");
+      }
+    } else if (status === "unauthenticated") {
+      router.push("/");
+    }
+    // else {
+    //   router.push('/auth/signin');
+    // }
+  }, [status, session, dispatch, router]);
 
   const toggleDiscountSlider = () => {
     setIsDiscountActive((prev) => !prev);
@@ -41,6 +79,43 @@ const Payment: React.FC = () => {
 
   const togglePointSlider = () => {
     setIsPointActive((prev) => !prev);
+  };
+
+  const formatPrice = (price: number | undefined) => {
+    if (!price) return "";
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(price);
+  };
+
+  const handleIncreaseQuantity = (itemId: number) => {
+    const updatedTickets = selectedTickets.map((item: any) =>
+      item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setSelectedTickets(updatedTickets);
+
+    dispatch(updateQuantity({ id: itemId, quantity: 1 }));
+  };
+
+  const handleDecreaseQuantity = (itemId: number) => {
+    const updatedTickets = selectedTickets.map((item: any) =>
+      item.id === itemId && item.quantity > 1
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    );
+    setSelectedTickets(updatedTickets);
+
+    dispatch(updateQuantity({ id: itemId, quantity: -1 }));
+  };
+
+  const handleDeleteItem = (itemId: number) => {
+    const updatedTickets = selectedTickets.filter(
+      (item: any) => item.id !== itemId
+    );
+    setSelectedTickets(updatedTickets);
+
+    dispatch(deleteItem(itemId));
   };
 
   return (
@@ -134,20 +209,66 @@ const Payment: React.FC = () => {
             <h1 className="text-[#acacac] font-bold text-lg font-mono">
               Order Summary
             </h1>
-            <div className="flex items-center justify-between border-t border-gray-500 pt-2 mt-4"></div>
+
+            {selectedTickets.map((item: any) => (
+              <div key={item.id}>
+                <div className="my-4">
+                  <p className="text-[#fff] text-xl">{item.eventName}</p>
+                  <div className="flex justify-between mt-1">
+                    <p className="text-[#fff] text-xs">
+                      {item.ticketName} x {item.quantity}
+                    </p>
+                    <p className="text-[#fff] font-bold text-xs">
+                      {formatPrice(item.originalPrice)}
+                    </p>
+                  </div>
+
+                  <div className="mt-2 flex gap-4">
+                    <button
+                      className="text-[#fff] font-semibold text-xl"
+                      onClick={() => handleIncreaseQuantity(item.id)}>
+                      +
+                    </button>
+                    <button
+                      className="text-[#fff] font-semibold text-xl"
+                      onClick={() => handleDecreaseQuantity(item.id)}>
+                      -
+                    </button>
+                    <button
+                      className="p-2 bg-[#fff] text-red-500 font-semibold rounded-full text-xs"
+                      onClick={() => handleDeleteItem(item.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-gray-500 pt-2 mt-4"></div>
+              </div>
+            ))}
 
             <div className="flex justify-between items-center my-4">
-              <p className="text-[#fff]">Ticket name x quantity</p>
-              <p className="text-[#fff] font-bold">100000</p>
-            </div>
-            <div className="flex justify-between items-center my-4">
-              <p className="text-[#fff]">Total : </p>
-              <p className="text-[#fff] font-bold">100000</p>
+              <p className="text-[#fff] font-bold">Total :</p>
+              <p className="text-[#fff] font-bold">
+                {formatPrice(
+                  selectedTickets.reduce(
+                    (acc: any, item: any) =>
+                      acc + item.originalPrice * item.quantity,
+                    0
+                  )
+                )}
+              </p>
             </div>
 
             <button
               type="button"
-              className="p-2 bg-green-700 w-full rounded-full text-[#fff] hover:bg-green-600 font-semibold mt-4">
+              className={`p-2 w-full rounded-full text-[#fff] font-semibold mt-4 ${
+                selectedTickets.length === 0
+                  ? "bg-[#acacac]"
+                  : "bg-green-700 hover:bg-green-600"
+              }`}
+              disabled={selectedTickets.length === 0}
+              // onClick={handleOrderNow}
+            >
               Proceed to payment
             </button>
           </div>
@@ -157,4 +278,4 @@ const Payment: React.FC = () => {
   );
 };
 
-export default Payment;
+export default CartPage;

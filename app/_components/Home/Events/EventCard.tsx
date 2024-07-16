@@ -29,7 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     const formatter = new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
-      minimumFractionDigits: 0, // Adjust decimals as needed
+      minimumFractionDigits: 0,
     });
 
     const formattedLowestPrice = formatter.format(lowestPrice);

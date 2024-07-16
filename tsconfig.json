@@ -12,6 +12,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "types": ["jest", "@testing-library/jest-dom"],
+    // "types": ["jest", "@testing-library/jest-dom", "node"],
     "incremental": true,
     "plugins": [
       {
@@ -19,8 +21,10 @@
       }
     ],
     "paths": {
+      "@/app/*": ["app/*"],
       "@/*": ["./*"]
-    }
+    },
+    "baseUrl": "./"
   },
   "include": [
     "next-env.d.ts",

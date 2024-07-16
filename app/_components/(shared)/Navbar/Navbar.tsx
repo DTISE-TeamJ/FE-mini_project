@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
       />
 
       <WrapperIcon>
-        <Icon onClick={handleCart}>
+        <Icon onClick={handleCart} data-testid="cart-icon">
           <FaCartShopping size={20} />
         </Icon>
         <Icon>
@@ -110,7 +110,10 @@ const Navbar: React.FC = () => {
           <FaCartShopping size={20} />
         </Icon>
 
-        <div onClick={handleNav} className="md:hidden z-10">
+        <div
+          onClick={handleNav}
+          className="md:hidden z-10"
+          data-testid="menu-icon">
           {nav ? (
             <AiOutlineClose className="text-black" size={20} />
           ) : (

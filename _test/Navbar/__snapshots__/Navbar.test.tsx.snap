@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Navbar Component renders correctly and matches snapshot 1`] = `
+<DocumentFragment>
+  <nav>
+    <h1>
+      PEACHES.
+    </h1>
+    <ul>
+      <li>
+        Home
+      </li>
+      <li>
+        Destinations
+      </li>
+      <li>
+        Travel
+      </li>
+      <li>
+        View
+      </li>
+      <li>
+        Book
+      </li>
+    </ul>
+    <div
+      title="Cart"
+    >
+      Cart Icon
+    </div>
+    <div
+      title="User"
+    >
+      User Icon
+    </div>
+    <div
+      title="Menu"
+    >
+      Menu Icon
+    </div>
+  </nav>
+</DocumentFragment>
+`;
