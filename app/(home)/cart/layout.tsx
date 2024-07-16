@@ -1,5 +1,6 @@
 import React from "react";
-import ReduxProvider from "@/store/redux-provider";
+// import ReduxProvider from "@/store/redux-provider";
+import ReduxProvider from "store/redux-provider";
 import type { Metadata } from "next";
 
 interface LayoutProps {

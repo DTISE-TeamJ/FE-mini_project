@@ -44,7 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           const { user, jwt } = result.data;
           const cookieStore = cookies();
-          console.log(jwt, "<===");
+          // console.log(jwt, "<===");
           // console.log(cookieStore.get("jwt"));
           cookieStore.set("jwt", jwt);
           return {

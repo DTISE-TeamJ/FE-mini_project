@@ -24,6 +24,7 @@ const Hero: React.FC<SearchProps> = ({ setSearchTerm }) => {
   return (
     <div className="w-full h-screen relative">
       <video
+        data-testid="videoPlayer"
         className="w-full h-full object-cover"
         src="/beachVid.mp4"
         autoPlay

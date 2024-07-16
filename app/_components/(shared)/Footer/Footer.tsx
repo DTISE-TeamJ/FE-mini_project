@@ -33,12 +33,11 @@ const Footer: React.FC = () => {
     <FooterContainer>
       <Row>
         <Column>
-          <h1 className="text-2xl font-bold text-white mb-4">PEACHES.</h1>
-          {/* <Image
-            src={LogoImg2}
-            alt="test-img"
-            className="top-[-100px] h-[-100px] w-[-100px] relative"
-          /> */}
+          <h1
+            className="text-2xl font-bold text-white mb-4"
+            data-testid="headingFooter">
+            PEACHES.
+          </h1>
           <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, quos.
             Iure, velit? Harum commodi impedit itaque, iure adipisci odio
