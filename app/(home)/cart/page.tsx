@@ -9,14 +9,13 @@ import { RootState, useAppDispatch, useAppSelector } from "@/store";
 import { signIn, useSession } from "next-auth/react";
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
-
 import {
   deleteItem,
   getOrderItem,
   updateQuantity,
-  adjustQuantity,
 } from "store/action/order-slice";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import PromoCodeForm from "@/app/_components/Home/PromoForm/PromoForm";
 
 interface SliderButtonProps {
   isActive: boolean;
@@ -69,15 +68,13 @@ const CartPage: React.FC = () => {
   const router = useRouter();
 
   const { order } = useAppSelector((state: RootState) => state.orderItem);
-  const [selectedTickets, setSelectedTickets] = useState(
-    order?.[0]?.orderItems
-  );
+  // const [selectedTickets, setSelectedTickets] = useState(
+  //   order?.[0]?.orderItems
+  // );
 
-  // console.log(selectedTickets, "<== selected ticket");
+  const selectedTickets = order?.[0]?.orderItems;
 
-  console.log(order?.[0]?.orderItems, "<===");
-
-  // console.log(order, "<== order id");
+  console.log(order?.[0]?.id, "<== order id");
 
   // useEffect(() => {
   //   if (status === "authenticated") {
@@ -98,16 +95,19 @@ const CartPage: React.FC = () => {
   useEffect(() => {
     if (status === "loading") return;
 
+    if (status === "unauthenticated") {
+      router.push("/");
+      return;
+    }
+
     if (status === "authenticated" && session?.user?.id) {
       if (session.user.role === "USER") {
         dispatch(getOrderItem(parseInt(session.user.id)));
       } else {
         router.push("/");
       }
-    } else if (status === "unauthenticated") {
-      router.push("/");
     }
-  }, []);
+  }, [status, session, router, dispatch]);
 
   const toggleDiscountSlider = () => {
     setIsDiscountActive((prev) => !prev);
@@ -126,31 +126,14 @@ const CartPage: React.FC = () => {
   };
 
   const handleIncreaseQuantity = (itemId: number) => {
-    const updatedTickets = selectedTickets.map((item: any) =>
-      item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
-    );
-    setSelectedTickets(updatedTickets);
-
-    dispatch(updateQuantity({ id: itemId, quantity: 1 }));
+    dispatch(updateQuantity({ itemId, quantity: 1 }));
   };
 
   const handleDecreaseQuantity = (itemId: number) => {
-    const updatedTickets = selectedTickets.map((item: any) =>
-      item.id === itemId && item.quantity > 1
-        ? { ...item, quantity: item.quantity - 1 }
-        : item
-    );
-    setSelectedTickets(updatedTickets);
-
-    dispatch(updateQuantity({ id: itemId, quantity: -1 }));
+    dispatch(updateQuantity({ itemId, quantity: -1 }));
   };
 
   const handleDeleteItem = (itemId: number) => {
-    const updatedTickets = selectedTickets.filter(
-      (item: any) => item.id !== itemId
-    );
-    setSelectedTickets(updatedTickets);
-
     dispatch(deleteItem(itemId));
   };
 
@@ -167,6 +150,14 @@ const CartPage: React.FC = () => {
     // Handle form submission here
     console.log(values);
     setSubmitting(false);
+  };
+
+  // console.log(selectedTickets, "<==");
+
+  const handleProceedToPayment = () => {
+    if (selectedTickets?.length > 0 && order?.[0]?.id) {
+      router.push(`/payment/${order?.[0]?.id}`);
+    }
   };
 
   return (
@@ -293,6 +284,12 @@ const CartPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* <PromoCodeForm
+                  orderId={order[0].id}
+                  eventId={item.eventId}
+                  userId={parseInt(session?.user?.id as string)}
+                /> */}
+
                 <div className="flex items-center justify-between border-t border-gray-500 pt-2 mt-4"></div>
               </div>
             ))}
@@ -318,8 +315,7 @@ const CartPage: React.FC = () => {
                   : "bg-green-700 hover:bg-green-600"
               }`}
               disabled={selectedTickets?.length === 0}
-              // onClick={handleOrderNow}
-            >
+              onClick={handleProceedToPayment}>
               Proceed to payment
             </button>
           </div>

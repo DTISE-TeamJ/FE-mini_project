@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <NavbarContainer className="overflow-x-hidden">
+    <NavbarContainer>
       <div className="logoNavbar cursor-pointer" onClick={handleHome}>
         <h1
           className={`text-3xl md:text-4xl font-bold text-white ${

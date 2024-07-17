@@ -97,8 +97,6 @@ const calculatePrices = (orderItems: TicketRequest[]) => {
     0
   );
 
-  // console.log(finalPrice, "<===");
-
   return { totalOriginalPrice, finalPrice };
 };
 
@@ -108,42 +106,33 @@ const orderSlice = createSlice({
   reducers: {
     updateQuantity(state, action) {
       const { itemId, quantity } = action.payload;
-      const itemToUpdate = state.order?.orderItems?.find(
+      const itemToUpdate = state.order?.[0]?.orderItems?.find(
         (item: TicketRequest) => item.id === itemId
       );
       if (itemToUpdate) {
-        itemToUpdate.quantity = quantity;
+        itemToUpdate.quantity += quantity;
+        if (itemToUpdate.quantity < 1) {
+          itemToUpdate.quantity = 1; // Ensure quantity doesn't go below 1
+        }
         const { totalOriginalPrice, finalPrice } = calculatePrices(
-          state.order.orderItems
+          state.order[0].orderItems
         );
-        state.order.totalOriginalPrice = totalOriginalPrice;
-        state.order.finalPrice = finalPrice;
+        state.order[0].totalOriginalPrice = totalOriginalPrice;
+        state.order[0].finalPrice = finalPrice;
       }
     },
-    // deleteItem(state, action) {
-    //   const itemId = action?.payload;
-    //   state.order.orderItems = state?.order?.orderItems?.filter(
-    //     (item: TicketRequest) => item?.id !== itemId
-    //   );
-    //   const { totalOriginalPrice, finalPrice } = calculatePrices(
-    //     state.order.orderItems
-    //   );
-    //   state.order.totalOriginalPrice = totalOriginalPrice;
-    //   state.order.finalPrice = finalPrice;
-    // },
-
     deleteItem(state, action) {
       const itemId = action.payload;
-      if (state.order && state.order.orderItems) {
-        state.order.orderItems = state.order.orderItems.filter(
+      if (state.order && state.order[0] && state.order[0].orderItems) {
+        state.order[0].orderItems = state.order[0].orderItems.filter(
           (item: TicketRequest) => item.id !== itemId
         );
 
         const { totalOriginalPrice, finalPrice } = calculatePrices(
-          state.order.orderItems
+          state.order[0].orderItems
         );
-        state.order.totalOriginalPrice = totalOriginalPrice;
-        state.order.finalPrice = finalPrice;
+        state.order[0].totalOriginalPrice = totalOriginalPrice;
+        state.order[0].finalPrice = finalPrice;
       }
     },
 
