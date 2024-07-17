@@ -8,8 +8,10 @@ import { useSession } from "next-auth/react";
 
 // const Payment = ({ orderId }: { orderId: string }) => {
 const Payment = () => {
-  const [creditCardAmount, setCreditCardAmount] = useState(0);
-  const [bankTransferAmount, setBankTransferAmount] = useState(0);
+  // const [creditCardAmount, setCreditCardAmount] = useState(0);
+  // const [bankTransferAmount, setBankTransferAmount] = useState(0);
+  const [creditCardAmount, setCreditCardAmount] = useState(1500000);
+  const [bankTransferAmount, setBankTransferAmount] = useState(100000);
   const router = useRouter();
   // const { user } = useAppSelector((state) => state.auth);
 
@@ -30,8 +32,13 @@ const Payment = () => {
             CREDIT_CARD: creditCardAmount,
             BANK_TRANSFER: bankTransferAmount,
           },
+
+          //       "CREDIT_CARD": 1500000,
+          // "BANK_TRANSFER": 100000
         }
       );
+
+      console.log(JSON.stringify(response.data), "<===");
 
       if (response.status === 200) {
         alert("Payment processed successfully!");
@@ -39,9 +46,45 @@ const Payment = () => {
       }
     } catch (error) {
       console.error("Error processing payment:", error);
-      alert("Error processing payment. Please try again.");
+      // alert("Error processing payment. Please try again.");
     }
   };
+
+  // const handlePayment = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `/api/v1/orders/${orderId}/process-payment`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${session?.sessionToken}`,
+  //         },
+  //         body: JSON.stringify({
+  //           userId: session?.user?.id,
+  //           paymentDetails: {
+  //             CREDIT_CARD: creditCardAmount,
+  //             BANK_TRANSFER: bankTransferAmount,
+  //           },
+  //         }),
+  //       }
+  //     );
+
+  //     const responseData = await response.json(); // Parse JSON response
+
+  //     console.log("Response Data:", responseData); // Log the response data
+
+  //     if (response.ok) {
+  //       alert("Payment processed successfully!");
+  //       router.push("/confirmation");
+  //     } else {
+  //       throw new Error(responseData.message || "Failed to process payment");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error processing payment:", error);
+  //     alert("Error processing payment. Please try again.");
+  //   }
+  // };
 
   return (
     <div className="bg-custom-gradient w-full h-full overflow-x-hidden py-8 pt-24">

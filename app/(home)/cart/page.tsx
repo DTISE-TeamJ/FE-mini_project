@@ -102,7 +102,11 @@ const CartPage: React.FC = () => {
 
     if (status === "authenticated" && session?.user?.id) {
       if (session.user.role === "USER") {
-        dispatch(getOrderItem(parseInt(session.user.id)));
+        // dispatch(getOrderItem(parseInt(session.user.id)));
+        // dispatch(getOrderItem({ id: parseInt(session.user.id), token: session?.sessionToken }));
+
+        const token = session?.sessionToken; // Assuming your session stores the token
+        dispatch(getOrderItem({ id: parseInt(session.user.id), token }));
       } else {
         router.push("/");
       }

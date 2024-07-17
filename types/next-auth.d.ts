@@ -1,7 +1,7 @@
-import 'next-auth';
-import 'next-auth/jwt';
+import "next-auth";
+import "next-auth/jwt";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface User {
     id: number;
     role: string;
@@ -17,10 +17,11 @@ declare module 'next-auth' {
     user: User & {
       role: string;
     };
+    sessionToken?: string;
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     role?: string;
   }

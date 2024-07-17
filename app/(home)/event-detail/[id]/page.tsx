@@ -39,6 +39,8 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  // console.log(session?.sessionToken, "<=== session in event-detail");
+
   const eventDetail = useAppSelector((state: RootState) =>
     state.eventStore.result?.find((event: any) => event?.id === id)
   );
@@ -119,7 +121,12 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
       };
 
       try {
-        dispatch(addOrderItem(orderData));
+        // dispatch(addOrderItem({ orderData, token: session?.user?.id }));
+        dispatch(addOrderItem({ orderData, token: session?.sessionToken }))
+          .unwrap()
+          .then(() => {
+            router.push("/cart");
+          });
       } catch (error) {
         console.error(error);
       }
