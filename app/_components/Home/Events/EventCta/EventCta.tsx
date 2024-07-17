@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 const EventCta = () => {
   const router = useRouter();
 
-  const handleSearchEvents = () => {
-    router.push("/search-events");
+  const handleExploreEvents = () => {
+    router.push("/discover");
   };
 
   return (
@@ -21,8 +21,8 @@ const EventCta = () => {
               Find your next wave of excitement with WaveFest events!
             </p>
             <button
-              onClick={handleSearchEvents}
-              className="bg-cyan-500 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-blue-600  transition duration-300">
+              onClick={handleExploreEvents}
+              className="bg-cyan-500 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-blue-600 transition duration-300">
               Explore More Events
             </button>
           </div>
