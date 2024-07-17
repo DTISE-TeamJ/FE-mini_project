@@ -19,6 +19,8 @@ import {
 } from "./style";
 import CustomModal from "../CustomModal";
 import { LogInIcon } from "../../Admin/Header/style";
+import { clearOrderData } from "@/store/action/order-slice";
+import { useAppDispatch } from "@/store";
 
 const Navbar: React.FC = () => {
   const [nav, setNav] = useState(false);
@@ -26,6 +28,7 @@ const Navbar: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleNav = () => {
     setNav(!nav);
@@ -34,6 +37,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
+    dispatch(clearOrderData());
     closeModal();
     router.push("/");
   };

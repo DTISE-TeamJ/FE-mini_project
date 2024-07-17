@@ -146,6 +146,10 @@ const orderSlice = createSlice({
         state.order.finalPrice = finalPrice;
       }
     },
+
+    clearOrderData: (state) => {
+      return initialState;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -200,7 +204,8 @@ const orderSlice = createSlice({
   },
 });
 
-export const { updateQuantity, deleteItem } = orderSlice.actions;
+export const { updateQuantity, deleteItem, clearOrderData } =
+  orderSlice.actions;
 
 export { addOrderItem, getOrderItem, adjustQuantity };
 

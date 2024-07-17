@@ -73,17 +73,17 @@ const CartPage: React.FC = () => {
     order?.[0]?.orderItems
   );
 
-  // console.log(order?.userId);
+  // console.log(selectedTickets, "<== selected ticket");
 
-  console.log(order?.userId, "<== order id");
+  console.log(order?.[0]?.orderItems, "<===");
+
+  // console.log(order, "<== order id");
 
   // useEffect(() => {
   //   if (status === "authenticated") {
   //     if (session?.user?.role === "USER") {
-  //       // dispatch(getOrderItem(order?.[0]?.userId));
-  //       dispatch(getOrderItem(order?.userId));
-
-  //       // dispatch(getOrderItem(titit.userId));
+  //       dispatch(getOrderItem(order?.[0]?.userId));
+  //       // dispatch(getOrderItem(order?.userId));
   //     } else {
   //       router.push("/");
   //     }
@@ -107,7 +107,7 @@ const CartPage: React.FC = () => {
     } else if (status === "unauthenticated") {
       router.push("/");
     }
-  }, [status, session, dispatch, router]);
+  }, []);
 
   const toggleDiscountSlider = () => {
     setIsDiscountActive((prev) => !prev);
