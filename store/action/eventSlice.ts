@@ -1,7 +1,7 @@
 import { Event, FetchEventsParams, SearchEventsParams } from "@/types/event";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-interface PaginatedResponse {
+export interface PaginatedResponse {
   totalPages: number;
   totalElements: number;
   size: number;
@@ -20,6 +20,7 @@ interface EventState {
   totalPages: number;
   currentPage: number;
   activeCategory: string;
+  totalElements: number;
 }
 
 const initialState: EventState = {
@@ -30,6 +31,7 @@ const initialState: EventState = {
   totalPages: 1,
   currentPage: 0,
   activeCategory: "All",
+  totalElements: 0,
 };
 
 export const fetchEvents = createAsyncThunk(
@@ -88,6 +90,9 @@ const eventSlice = createSlice({
       setCurrentPage: (state, action: PayloadAction<number>) => {
         state.currentPage = action.payload;
       },
+      appendEvents: (state, action: PayloadAction<Event[]>) => {
+        state.events = [...state.events, ...action.payload];
+      },
   },
   extraReducers: (builder) => {
     builder
@@ -114,12 +119,10 @@ const eventSlice = createSlice({
         state.loading = "succeeded";
         if (action.payload) {
           state.events = action.payload.content || [];
-          state.totalPages = action.payload.totalPages || 0;
-          state.currentPage = action.payload.number || 0;
+          state.totalElements = action.payload.totalElements || 0;
         } else {
           state.events = [];
-          state.totalPages = 0;
-          state.currentPage = 0;
+          state.totalElements = 0;
         }
       })
       .addCase(searchEvents.rejected, (state, action) => {
@@ -143,6 +146,6 @@ const eventSlice = createSlice({
   },
 });
 
-export const { setActiveCategory, setCurrentPage } = eventSlice.actions;
+export const { setActiveCategory, setCurrentPage, appendEvents } = eventSlice.actions;
 
 export default eventSlice.reducer;

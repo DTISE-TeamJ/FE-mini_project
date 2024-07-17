@@ -43,9 +43,10 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   return (
     <div
-      className="shadow-md rounded-b-2xl rounded-t-2xl bg-white "
-      onClick={handleDetail}>
-      <div className="relative h-[150px] overflow-hidden rounded-t-[10px] ">
+      className="shadow-md rounded-b-2xl rounded-t-2xl bg-white h-full flex flex-col"
+      onClick={handleDetail}
+    >
+      <div className="relative h-[150px] overflow-hidden rounded-t-[10px]">
         <Image
           src={event?.pic}
           alt={`${event?.name}-image`}
@@ -58,7 +59,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           {event?.eventCategory?.name}
         </div>
       </div>
-      <div className="p-4 flex flex-col gap-2">
+      <div className="p-4 flex flex-col gap-2 flex-grow">
         <div className="text-md font-medium mb-2 cursor-pointer">
           {event?.description}
         </div>
@@ -86,9 +87,9 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             <span className="text-[#000]">{event?.location}</span>
           </div>
         </div>
-        <div className="text-[#000] font-medium text-sm mt-4 cursor-pointer">
-          Organized by {event?.organization}
-        </div>
+      </div>
+      <div className="text-[#000] font-medium text-sm mt-2 mb-4 px-4 cursor-pointer">
+        Organized by {event?.organization}
       </div>
     </div>
   );
