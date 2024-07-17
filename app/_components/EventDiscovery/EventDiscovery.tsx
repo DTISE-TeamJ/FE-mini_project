@@ -10,6 +10,7 @@ import LocationMenu from "./LocationMenu";
 import CategoryMenu from "./CategoryMenu";
 import SearchInput from "./SearchInput";
 import SortMenu from "./SortMenu";
+import CardEventSkeleton from "../Skeleton/CardEventSkeleton";
 
 const EventDiscovery: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,10 +26,12 @@ const EventDiscovery: React.FC = () => {
   const [size, setSize] = useState(16);
   const [allEventsLoaded, setAllEventsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const resetSearch = () => {
     setSize(16);
     setAllEventsLoaded(false);
+    setInitialLoad(true);
   };
 
   const setKeywordAndReset = (value: string) => {
@@ -51,29 +54,45 @@ const EventDiscovery: React.FC = () => {
     resetSearch();
   };
 
+  const performSearch = useCallback((searchParams: SearchEventsParams) => {
+    setIsLoading(true);
+    dispatch(searchEvents(searchParams))
+      .unwrap()
+      .then((result: PaginatedResponse) => {
+        setIsLoading(false);
+        setInitialLoad(false);
+        if (result.content.length >= result.totalElements) {
+          setAllEventsLoaded(true);
+        } else {
+          setAllEventsLoaded(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error searching events:", error);
+        setIsLoading(false);
+        setInitialLoad(false);
+      });
+  }, [dispatch]);
+
+  const debouncedSearch = useCallback(
+    debounce((searchParams: SearchEventsParams) => {
+      performSearch(searchParams);
+    }, 300),
+    [performSearch]
+  );
+
   const observer = useRef<IntersectionObserver | null>(null);
   const lastEventElementRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          if (events.length < totalElements) {
-            setSize((prevSize) => prevSize + 8);
-          } else {
-            setAllEventsLoaded(true);
-          }
+        if (entries[0].isIntersecting && !isLoading && !allEventsLoaded) {
+          setSize((prevSize) => prevSize + 8);
         }
       });
       if (node) observer.current.observe(node);
     },
-    [events.length, totalElements]
-  );
-
-  const debouncedSearch = useCallback(
-    debounce((searchParams) => {
-      dispatch(searchEvents(searchParams));
-    }, 1000),
-    [dispatch]
+    [isLoading, allEventsLoaded]
   );
 
   useEffect(() => {
@@ -85,22 +104,45 @@ const EventDiscovery: React.FC = () => {
       page: 0,
       size,
     };
-    setIsLoading(true);
-    dispatch(searchEvents(searchParams))
-      .unwrap()
-      .then((result: PaginatedResponse) => {
-        setIsLoading(false);
-        if (result.content.length >= result.totalElements) {
-          setAllEventsLoaded(true);
-        } else {
-          setAllEventsLoaded(false);
-        }
-      })
-      .catch((error) => {
-        console.error("Error searching events:", error);
-        setIsLoading(false);
-      });
-  }, [keyword, location, category, sort, size, dispatch]);
+    debouncedSearch(searchParams);
+  }, [keyword, location, category, sort, size, debouncedSearch]);
+
+  const renderEventCards = () => {
+    if (initialLoad) {
+      return Array(8).fill(0).map((_, index) => (
+        <CardEventSkeleton key={index} />
+      ));
+    }
+
+    if (events.length === 0 && !isLoading) {
+      return (
+        <div className="col-span-full text-center text-gray-400 py-4">
+          No events found. Try adjusting your search criteria.
+        </div>
+      );
+    }
+
+    return (
+      <>
+        {events.map((event: Event, index: number) => (
+          <div
+            key={event.id}
+            className="h-full"
+            ref={index === events.length - 1 ? lastEventElementRef : null}
+          >
+            <EventCard event={event} />
+          </div>
+        ))}
+        {isLoading && !initialLoad && (
+          <>
+            {Array(4).fill(0).map((_, index) => (
+              <CardEventSkeleton key={`loading-${index}`} />
+            ))}
+          </>
+        )}
+      </>
+    );
+  };
 
   return (
     <div className="container mx-auto px-4 pb-8 pt-32">
@@ -120,22 +162,14 @@ const EventDiscovery: React.FC = () => {
         <SortMenu selectedSort={sort} setSelectedSort={setSortAndReset} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {events.map((event: Event, index: number) => (
-          <div
-            key={event.id}
-            className="h-full"
-            ref={index === events.length - 1 ? lastEventElementRef : null}
-          >
-            <EventCard event={event} />
-          </div>
-        ))}
+        {renderEventCards()}
       </div>
-      {!allEventsLoaded && isLoading && (
+      {!initialLoad && !isLoading && !allEventsLoaded && events.length > 0 && (
         <div className="text-center text-gray-400 py-4">
-          Loading more events...
+          Scroll down to load more events...
         </div>
       )}
-      {allEventsLoaded && (
+      {allEventsLoaded && events.length > 0 && (
         <div className="text-center text-gray-400 py-4">
           You've reached the end of the events, nothing more to show
         </div>
