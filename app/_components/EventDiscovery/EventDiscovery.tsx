@@ -109,7 +109,7 @@ const EventDiscovery: React.FC = () => {
 
   const renderEventCards = () => {
     if (initialLoad) {
-      return Array(8).fill(0).map((_, index) => (
+      return Array(16).fill(0).map((_, index) => (
         <CardEventSkeleton key={index} />
       ));
     }
@@ -135,7 +135,7 @@ const EventDiscovery: React.FC = () => {
         ))}
         {isLoading && !initialLoad && (
           <>
-            {Array(4).fill(0).map((_, index) => (
+            {Array(8).fill(0).map((_, index) => (
               <CardEventSkeleton key={`loading-${index}`} />
             ))}
           </>
