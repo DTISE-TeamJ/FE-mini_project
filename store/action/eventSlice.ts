@@ -1,4 +1,9 @@
-import { Event, FetchEventsParams, SearchEventsParams } from "@/types/event";
+import {
+  Event,
+  EventCategory,
+  FetchEventsParams,
+  SearchEventsParams,
+} from "@/types/event";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 export interface PaginatedResponse {
@@ -21,6 +26,9 @@ interface EventState {
   currentPage: number;
   activeCategory: string;
   totalElements: number;
+  eventCategories: EventCategory[];
+  eventCategoriesLoading: "idle" | "pending" | "succeeded" | "failed";
+  eventCategoriesError: string | null;
 }
 
 const initialState: EventState = {
@@ -32,6 +40,9 @@ const initialState: EventState = {
   currentPage: 0,
   activeCategory: "All",
   totalElements: 0,
+  eventCategories: [],
+  eventCategoriesLoading: "idle",
+  eventCategoriesError: null,
 };
 
 export const fetchEvents = createAsyncThunk(
@@ -79,20 +90,64 @@ export const fetchEventDetails = createAsyncThunk(
   }
 );
 
+export const createEvent = createAsyncThunk<Event, FormData>(
+  "events/createEvent",
+  async (formData: FormData, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/create-event`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        return rejectWithValue(errorData);
+      }
+
+      const data = await response.json();
+      return data.data as Event;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
+
+export const fetchEventCategories = createAsyncThunk(
+  "events/fetchEventCategories",
+  async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/event-categories`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch event categories");
+    }
+    const data = await response.json();
+    return data.data as EventCategory[];
+  }
+);
+
 const eventSlice = createSlice({
   name: "events",
   initialState,
   reducers: {
     setActiveCategory: (state, action: PayloadAction<string>) => {
-        state.activeCategory = action.payload;
-        state.currentPage = 0;
-      },
-      setCurrentPage: (state, action: PayloadAction<number>) => {
-        state.currentPage = action.payload;
-      },
-      appendEvents: (state, action: PayloadAction<Event[]>) => {
-        state.events = [...state.events, ...action.payload];
-      },
+      state.activeCategory = action.payload;
+      state.currentPage = 0;
+    },
+    setCurrentPage: (state, action: PayloadAction<number>) => {
+      state.currentPage = action.payload;
+    },
+    appendEvents: (state, action: PayloadAction<Event[]>) => {
+      state.events = [...state.events, ...action.payload];
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -115,16 +170,19 @@ const eventSlice = createSlice({
       .addCase(searchEvents.pending, (state) => {
         state.loading = "pending";
       })
-      .addCase(searchEvents.fulfilled, (state, action: PayloadAction<PaginatedResponse | null>) => {
-        state.loading = "succeeded";
-        if (action.payload) {
-          state.events = action.payload.content || [];
-          state.totalElements = action.payload.totalElements || 0;
-        } else {
-          state.events = [];
-          state.totalElements = 0;
+      .addCase(
+        searchEvents.fulfilled,
+        (state, action: PayloadAction<PaginatedResponse | null>) => {
+          state.loading = "succeeded";
+          if (action.payload) {
+            state.events = action.payload.content || [];
+            state.totalElements = action.payload.totalElements || 0;
+          } else {
+            state.events = [];
+            state.totalElements = 0;
+          }
         }
-      })
+      )
       .addCase(searchEvents.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.error.message || null;
@@ -142,10 +200,35 @@ const eventSlice = createSlice({
       .addCase(fetchEventDetails.rejected, (state, action) => {
         state.loading = "failed";
         state.error = action.error.message || null;
+      })
+      .addCase(createEvent.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(createEvent.fulfilled, (state, action) => {
+        state.loading = "succeeded";
+        state.error = null;
+      })
+      .addCase(createEvent.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "An error occurred";
+      })
+      .addCase(fetchEventCategories.pending, (state) => {
+        state.eventCategoriesLoading = "pending";
+      })
+      .addCase(fetchEventCategories.fulfilled, (state, action) => {
+        state.eventCategoriesLoading = "succeeded";
+        state.eventCategories = action.payload;
+      })
+      .addCase(fetchEventCategories.rejected, (state, action) => {
+        state.eventCategoriesLoading = "failed";
+        state.eventCategoriesError =
+          action.error.message || "Failed to fetch event categories";
       });
   },
 });
 
-export const { setActiveCategory, setCurrentPage, appendEvents } = eventSlice.actions;
+export const { setActiveCategory, setCurrentPage, appendEvents } =
+  eventSlice.actions;
 
 export default eventSlice.reducer;

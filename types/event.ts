@@ -1,9 +1,9 @@
 export interface TicketType {
-  id: number;
+  id?: number;
   name: string;
   price: number;
   quantity: number;
-  eventId: number;
+  eventId?: number;
 }
 
 export interface EventCategory {
@@ -19,11 +19,11 @@ export interface User {
 
 export interface Promo {
   name: string;
-  promoType: string;
-  promoTypeDisplayName: string;
+  promoType: 'REFERRAL' | 'EVENT_CREATOR_DISCOUNT';
+  promoTypeDisplayName?: string;
   discount: number;
   quantity: number;
-  promoCode: string;
+  promoCode?: string;
   startValid: string;
   endValid: string;
 }
@@ -62,4 +62,23 @@ export interface SearchEventsParams {
 export interface FetchEventsParams {
   page?: number;
   size?: number;
+}
+
+export interface CreateEventDTO {
+  name: string;
+  start: string;
+  end: string;
+  organization: string;
+  location: string;
+  description: string;
+  userId: number;
+  eventCategoryId: number;
+  ticketTypes: TicketType[];
+  promos: Promo[];
+}
+
+export interface CreateEventFormData extends Omit<CreateEventDTO, 'start' | 'end'> {
+  image: File | null;
+  start: Date | null;
+  end: Date | null;
 }
