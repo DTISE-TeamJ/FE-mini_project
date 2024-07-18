@@ -42,7 +42,9 @@ const EventDetail: React.FC<EventDetailProps> = ({ params }) => {
   // console.log(session?.sessionToken, "<=== session in event-detail");
 
   const eventDetail = useAppSelector((state: RootState) =>
-    state.eventStore.result?.find((event: any) => event?.id === id)
+    Array.isArray(state.eventStore.result)
+      ? state.eventStore.result.find((event: any) => event?.id === id)
+      : undefined
   );
 
   console.log(eventDetail?.promos, "<=== event detail promo");

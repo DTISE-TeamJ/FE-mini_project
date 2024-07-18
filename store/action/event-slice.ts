@@ -37,7 +37,7 @@ interface EventsState {
 }
 
 const initialState: EventsState = {
-  result: [],
+  result: [] as Event[],
   loading: false,
   error: null,
   totalElements: 0,
@@ -198,11 +198,15 @@ const eventsSlice = createSlice({
         fetchEventDetail.fulfilled,
         (state, action: PayloadAction<Event>) => {
           const event = action.payload;
-          const index = state.result.findIndex((e: any) => e.id === event.id);
-          if (index !== -1) {
-            state.result[index] = event;
+          if (Array.isArray(state.result)) {
+            const index = state.result.findIndex((e: any) => e.id === event.id);
+            if (index !== -1) {
+              state.result[index] = event;
+            } else {
+              state.result.push(event);
+            }
           } else {
-            state.result.push(event);
+            state.result = [event];
           }
           state.loading = false;
         }
