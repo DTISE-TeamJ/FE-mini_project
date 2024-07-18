@@ -20,7 +20,7 @@ const MenuList: React.FC = () => {
 
   return (
     <MenuListContainer>
-      <MenuListItem className={activePath === "/admin" ? "active" : ""}>
+      <MenuListItem className={activePath === "/dashboard" ? "active" : ""}>
         <Link href="/dashboard">
           <IoDiamond />
           Dashboard

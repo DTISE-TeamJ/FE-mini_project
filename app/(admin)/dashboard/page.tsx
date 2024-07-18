@@ -14,6 +14,7 @@ import GlobalStyles from "@/styles/GlobalStyles";
 import { DARK_THEME, LIGHT_THEME } from "@/utils/theme";
 import { FaMoon, FaSun } from "react-icons/fa";
 import AreaCards from "@/app/_components/Admin/NewCard/AreaCards";
+import AnalyticsForm from "@/app/_components/Analytics/AnalyticsForm";
 
 const Dashboard: React.FC = () => {
   const { data: session } = useSession();
@@ -65,6 +66,7 @@ const Dashboard: React.FC = () => {
           </Content>
         </Container>
       </div>
+      {/* <AnalyticsForm /> */}
 
       {/* </ThemeProvider> */}
     </>

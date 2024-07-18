@@ -50,6 +50,7 @@ import metadataReducer from "./action/metadataSlice";
 import eventsReducer from "./action/eventSlice";
 import eventCategoryReducer from "./action/categoryEventSlice"
 import eventLocationReducer from "./action/locationEventSlice"
+import analyticsReducer from "./action/analyticsSlice";
 
 const rootReducer = combineReducers({
   eventStore: eventsSlice.reducer,
@@ -59,6 +60,7 @@ const rootReducer = combineReducers({
   events: eventsReducer,
   categoryEvents: eventCategoryReducer,
   locationEvents: eventLocationReducer,
+  analytics: analyticsReducer,
 });
 
 const persistConfig = {
