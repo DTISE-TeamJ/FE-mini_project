@@ -77,7 +77,7 @@ const EventDiscovery: React.FC = () => {
   const debouncedSearch = useCallback(
     debounce((searchParams: SearchEventsParams) => {
       performSearch(searchParams);
-    }, 300),
+    }, 1200),
     [performSearch]
   );
 

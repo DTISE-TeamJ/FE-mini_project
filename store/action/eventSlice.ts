@@ -3,6 +3,7 @@ import {
   EventCategory,
   FetchEventsParams,
   SearchEventsParams,
+  UpdateEventParams,
 } from "@/types/event";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
@@ -29,6 +30,8 @@ interface EventState {
   eventCategories: EventCategory[];
   eventCategoriesLoading: "idle" | "pending" | "succeeded" | "failed";
   eventCategoriesError: string | null;
+  userEvents: Event[];
+  userEventsLoading: "idle" | "pending" | "succeeded" | "failed";
 }
 
 const initialState: EventState = {
@@ -43,6 +46,8 @@ const initialState: EventState = {
   eventCategories: [],
   eventCategoriesLoading: "idle",
   eventCategoriesError: null,
+  userEvents: [],
+  userEventsLoading: "idle",
 };
 
 export const fetchEvents = createAsyncThunk(
@@ -128,6 +133,56 @@ export const fetchEventCategories = createAsyncThunk(
     }
     const data = await response.json();
     return data.data as EventCategory[];
+  }
+);
+
+export const updateEvent = createAsyncThunk<Event, UpdateEventParams>(
+  "events/updateEvent",
+  async ({ id, formData }: UpdateEventParams, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/edit-event/${id}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        return rejectWithValue(errorData);
+      }
+
+      const data = await response.json();
+      return data.data as Event;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  }
+);
+
+export const fetchEventsByUserId = createAsyncThunk(
+  "events/fetchEventsByUserId",
+  async (userId: number, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/events/user/${userId}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (!data.data) {
+        throw new Error("No data returned from the server");
+      }
+      return data.data as Event[];
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
   }
 );
 
@@ -224,6 +279,41 @@ const eventSlice = createSlice({
         state.eventCategoriesLoading = "failed";
         state.eventCategoriesError =
           action.error.message || "Failed to fetch event categories";
+      })
+      .addCase(updateEvent.pending, (state) => {
+        state.loading = "pending";
+      })
+      .addCase(updateEvent.fulfilled, (state, action: PayloadAction<Event>) => {
+        state.loading = "succeeded";
+        const index = state.events.findIndex((e) => e.id === action.payload.id);
+        if (index !== -1) {
+          state.events[index] = action.payload;
+        }
+        if (state.currentEvent && state.currentEvent.id === action.payload.id) {
+          state.currentEvent = action.payload;
+        }
+        state.error = null;
+      })
+      .addCase(updateEvent.rejected, (state, action) => {
+        state.loading = "failed";
+        state.error = action.error.message || "Failed to update event";
+      })
+      .addCase(fetchEventsByUserId.pending, (state) => {
+        state.userEventsLoading = "pending";
+        state.error = null;
+      })
+      .addCase(
+        fetchEventsByUserId.fulfilled,
+        (state, action: PayloadAction<Event[]>) => {
+          state.userEventsLoading = "succeeded";
+          state.userEvents = action.payload;
+          state.error = null;
+        }
+      )
+      .addCase(fetchEventsByUserId.rejected, (state, action) => {
+        state.userEventsLoading = "failed";
+        state.error =
+          (action.payload as string) || "Failed to fetch user events";
       });
   },
 });
