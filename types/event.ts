@@ -82,3 +82,8 @@ export interface CreateEventFormData extends Omit<CreateEventDTO, 'start' | 'end
   start: Date | null;
   end: Date | null;
 }
+
+export interface UpdateEventParams {
+  id: number;
+  formData: FormData;
+}
