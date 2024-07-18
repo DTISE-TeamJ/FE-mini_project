@@ -23,7 +23,7 @@ const Sidebar: React.FC = () => {
         {isOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
       </SidebarToggle>
       <SidebarWrapper className={isOpen ? "open" : ""}>
-        <SidebarLogo>TEST</SidebarLogo>
+        <SidebarLogo>PEACHES.</SidebarLogo>
         <MenuList />
       </SidebarWrapper>
     </SidebarContainer>

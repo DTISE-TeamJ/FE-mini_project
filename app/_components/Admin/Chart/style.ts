@@ -127,3 +127,50 @@ export const BarItemFilled = styled.div`
   border-radius: 100vh;
   background-color: #475be8;
 `;
+
+export const Form = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+`;
+
+export const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Label = styled.label`
+font-size: 14px;
+margin-bottom: 5px;
+`;
+
+export const Select = styled.select`
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
+`;
+
+export const Input = styled.input`
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
+`;
+
+export const Button = styled.button`
+padding: 8px 16px;
+background-color: #f0f0f0;
+border: 1px solid #ccc;
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s;
+
+&:hover {
+  background-color: #e0e0e0;
+}
+
+&:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+`;
